@@ -80,16 +80,13 @@ nav {
 }
 
 .app-icon {
-  width: 100px;
-  height: 100px;
-  background: linear-gradient(135deg, var(--primary), var(--surface));
-  border-radius: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 52px;
+  width: 120px;
+  height: 120px;
+  border-radius: 28px;
+  display: block;
   margin: 0 auto 28px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+  object-fit: cover;
 }
 
 .hero h1 {
