@@ -39,7 +39,7 @@
   var q=new URLSearchParams({name:"Despotar",number:"095/159",set_name:"Reisegef\u00e4hrten"});
   fetch("https://poketrack-backend-production.up.railway.app"+"/price?"+q).then(function(r){return r.json();}).then(function(d){
     var el=document.getElementById("kprice");
-    if(d&&typeof d.avg==="number"){el.textContent=d.avg.toFixed(2).replace(".",",")+" €";}
+    if(d&&typeof d.avg==="number"){el.textContent=d.avg.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";}
     else{el.textContent="Derzeit kein Angebot";el.classList.add("kp-none");}
   }).catch(function(){document.getElementById("kprice").textContent="—";});
 })();
