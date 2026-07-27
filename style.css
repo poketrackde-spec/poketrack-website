@@ -153,6 +153,11 @@ nav {
 .store-badge .store-sub { font-size: 11px; color: var(--text-muted); display: block; font-weight: 400; }
 .store-badge .store-name { display: block; line-height: 1.1; }
 
+/* Offizielles App-Store-Badge (SVG) */
+.appstore-badge { display: inline-flex; line-height: 0; border-radius: 8px; transition: transform .15s, opacity .15s; }
+.appstore-badge svg { height: 54px; width: auto; display: block; }
+.appstore-badge:hover { transform: translateY(-2px); opacity: .9; text-decoration: none; }
+
 .badge-soon {
   background: rgba(240, 180, 41, 0.08);
   border-color: rgba(240, 180, 41, 0.3);
