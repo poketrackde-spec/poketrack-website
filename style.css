@@ -75,7 +75,7 @@ nav {
 /* ── HERO ── */
 .hero {
   text-align: center;
-  padding: 100px 24px 80px;
+  padding: 48px 24px 72px;
   background: radial-gradient(ellipse at 50% 0%, rgba(30, 58, 95, 0.8) 0%, transparent 70%);
   position: relative;
   overflow: hidden;
@@ -125,6 +125,7 @@ nav {
   display: flex;
   gap: 12px;
   justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
 }
 
@@ -160,14 +161,17 @@ nav {
 
 .badge-soon {
   background: rgba(240, 180, 41, 0.08);
-  border-color: rgba(240, 180, 41, 0.3);
   color: var(--accent);
   font-size: 13px;
-  padding: 8px 16px;
+  font-weight: 600;
+  padding: 9px 16px;
   border-radius: 100px;
   border: 1px solid rgba(240, 180, 41, 0.3);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
+.badge-flag { height: 13px; width: auto; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15); }
 
 /* ── FEATURES ── */
 .features {
