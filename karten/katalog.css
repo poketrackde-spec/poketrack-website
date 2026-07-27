@@ -16,6 +16,13 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .kad-tag{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1.5px}
 @media(max-width:1400px){.kad{display:none}}
 .kbc{font-size:13px;color:var(--muted);margin-bottom:20px}.kbc a{color:var(--muted)}.kbc span{color:var(--text)}
+/* Prev/Next-Kartennavigation */
+.kcnav{display:flex;justify-content:space-between;gap:12px;margin:0 0 20px}
+.kcnav-empty{flex:1}
+.kcnav-link{flex:1;min-width:0;display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;transition:border-color .15s}
+.kcnav-link:hover{border-color:var(--accent);text-decoration:none}
+.kcnav-prev{justify-content:flex-start}
+.kcnav-next{justify-content:flex-end;text-align:right}
 .kh1{font-size:clamp(24px,4vw,34px);font-weight:800;letter-spacing:-.5px}
 .ksub{color:var(--muted);margin:6px 0 24px}
 .ktotal{display:flex;flex-direction:column;gap:3px;background:rgba(240,180,41,.10);border:1px solid rgba(240,180,41,.45);border-radius:var(--r);padding:16px 20px;margin:0 0 26px}
