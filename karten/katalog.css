@@ -8,6 +8,13 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .kn-links{display:flex;gap:16px;align-items:center}.kn-links a{color:var(--muted);font-size:14px;font-weight:600}
 .kn-cta{background:var(--accent);color:var(--dark)!important;padding:6px 14px;border-radius:100px}
 .kwrap{max-width:1000px;margin:0 auto;padding:24px 20px 60px}
+/* Werbung: Side-Rails links/rechts, zentrierter Inhalt in der Mitte */
+.kpage{display:flex;justify-content:center;align-items:flex-start;gap:28px;width:100%}
+.kpage>.kwrap{flex:0 1 1000px;min-width:0;margin:0}
+.kad{flex:0 0 160px;position:sticky;top:80px;align-self:flex-start;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:24px}
+.kad-box{width:160px;height:600px;background:var(--surface);border:1px dashed var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center}
+.kad-tag{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1.5px}
+@media(max-width:1400px){.kad{display:none}}
 .kbc{font-size:13px;color:var(--muted);margin-bottom:20px}.kbc a{color:var(--muted)}.kbc span{color:var(--text)}
 .kh1{font-size:clamp(24px,4vw,34px);font-weight:800;letter-spacing:-.5px}
 .ksub{color:var(--muted);margin:6px 0 24px}
@@ -15,6 +22,13 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .ktotal-label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--muted)}
 .ktotal-value{font-size:30px;font-weight:800;color:var(--accent);line-height:1.1}
 .ktotal-note{font-size:12px;color:var(--muted)}
+.ktotal-rows{display:flex;flex-direction:column;gap:5px;margin:2px 0 4px}
+.ktotal-line{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.ktotal-line span{font-size:14px;color:var(--muted)}
+.ktotal-line b{font-size:19px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.ktotal-sum{border-top:1px solid rgba(240,180,41,.35);padding-top:7px;margin-top:2px}
+.ktotal-sum span{color:var(--text);font-weight:700;font-size:15px}
+.ktotal-sum b{font-size:26px;font-weight:800;color:var(--accent)}
 /* Index: Sets nach Aera gruppiert, mit Logos */
 .kera{margin-bottom:44px}
 .kera-h{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--text);margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:10px;display:flex;align-items:center;gap:8px}
@@ -48,6 +62,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .kp-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:1px solid var(--border)}
 .kp-row:first-child{border-top:none}.kp-row span{color:var(--muted);font-size:14px}
 .kp-row b{font-size:20px;font-weight:800;color:var(--accent)}.kp-none{color:var(--muted)!important;font-size:15px!important}
+.kp-approx{font-size:12px;font-weight:600;color:var(--muted)}
 .knote{font-size:12px;color:var(--muted);margin-bottom:18px}
 .kappbtn{display:inline-block;background:var(--accent);color:var(--dark);font-weight:700;padding:12px 20px;border-radius:12px}
 .kappbtn:hover{text-decoration:none;opacity:.9}
