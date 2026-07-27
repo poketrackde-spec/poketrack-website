@@ -57,6 +57,20 @@ nav {
 .nav-links { display: flex; gap: 24px; }
 .nav-links a { color: var(--text-muted); font-size: 14px; font-weight: 500; }
 .nav-links a:hover { color: var(--text); text-decoration: none; }
+.nav-links a.nav-katalog { background: var(--accent); color: var(--primary-dark); padding: 8px 16px; border-radius: 100px; font-weight: 700; }
+.nav-links a.nav-katalog:hover { background: var(--accent-dark); color: var(--primary-dark); text-decoration: none; }
+
+/* ── KATALOG-CTA-BALKEN ── */
+.katalog-cta { display: block; background: linear-gradient(90deg, rgba(240,180,41,.14), rgba(240,180,41,.05)); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: background .15s; }
+.katalog-cta:hover { background: linear-gradient(90deg, rgba(240,180,41,.22), rgba(240,180,41,.09)); text-decoration: none; }
+.katalog-cta-inner { max-width: 1000px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; gap: 18px; }
+.katalog-cta-icon { font-size: 32px; flex-shrink: 0; line-height: 1; }
+.katalog-cta-text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.katalog-cta-text strong { color: var(--text); font-size: 17px; font-weight: 800; }
+.katalog-cta-text span { color: var(--text-muted); font-size: 14px; }
+.katalog-cta-btn { flex-shrink: 0; background: var(--accent); color: var(--primary-dark); font-weight: 700; font-size: 14px; padding: 11px 22px; border-radius: 100px; white-space: nowrap; }
+.katalog-cta:hover .katalog-cta-btn { background: var(--accent-dark); }
+@media (max-width: 640px) { .katalog-cta-inner { flex-direction: column; text-align: center; gap: 10px; padding: 18px 20px; } .katalog-cta-text { align-items: center; } }
 
 /* ── HERO ── */
 .hero {
