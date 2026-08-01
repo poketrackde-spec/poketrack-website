@@ -29,8 +29,7 @@
     <p class="ksub">Aufstieg der Rivalen · Nr. 7/111</p>
     <div class="kprice-box">
       <div class="kp-row"><span>Referenzpreis (Cardmarket, Normal)</span><b id="kprice">lädt…</b></div>
-      <div class="kp-row"><span>Reverse Holo</span><b><span id="kprice-rev">lädt…</span></b></div>
-      
+      <div class="kp-row"><span>Reverse Holo</span><b><span id="kpv-reverse">lädt…</span></b></div>
     </div>
     <p class="knote">Preise sind Cardmarket-Niedrigpreise (Near Mint, deutsch) und dienen als Orientierung.</p>
     <a class="kappbtn" href="https://apps.apple.com/de/app/id6790953375">In der PokéTrack-App öffnen →</a>
@@ -40,15 +39,16 @@
 </main>
 <script>
 (function(){
+  var fb=["kpv-reverse"];
+  var setFb=function(t){fb.forEach(function(id){var x=document.getElementById(id);if(x)x.textContent=t;});};
   var q=new URLSearchParams({name:"Jirachi",number:"7/111",set_name:"Aufstieg der Rivalen"});
   fetch("https://poketrack-backend-production.up.railway.app"+"/price?"+q).then(function(r){return r.json();}).then(function(d){
     var el=document.getElementById("kprice");
-    var rev=document.getElementById("kprice-rev");
     if(d&&typeof d.avg==="number"){
       var s=d.avg.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
-      el.textContent=s; if(rev)rev.textContent=s;
-    }else{el.textContent="Derzeit kein Angebot";el.classList.add("kp-none");if(rev)rev.textContent="—";}
-  }).catch(function(){document.getElementById("kprice").textContent="—";var rev=document.getElementById("kprice-rev");if(rev)rev.textContent="—";});
+      el.textContent=s; setFb(s);
+    }else{el.textContent="Derzeit kein Angebot";el.classList.add("kp-none");setFb("—");}
+  }).catch(function(){document.getElementById("kprice").textContent="—";setFb("—");});
 })();
 </script>
 <aside class="kad kad-right"><div class="kad-box"><span class="kad-tag">Werbung</span></div></aside></div>
