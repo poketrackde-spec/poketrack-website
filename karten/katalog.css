@@ -81,6 +81,15 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .kv-text{color:var(--muted);font-size:14px;margin-bottom:14px}
 .kchart{display:block;width:100%;height:auto;max-width:640px;margin:0 auto 16px}
 .kc-lab{fill:#8A9EB8;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-variant-numeric:tabular-nums}
+.kv-zahlen{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.kv-z{background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.kv-z span{color:var(--muted);font-size:12px}
+.kv-z b{font-size:16px;font-variant-numeric:tabular-nums}
+.kv-up{color:#5FD38D}.kv-down{color:#F07A7A}
+.kv-details{margin-top:14px}
+.kv-details summary{cursor:pointer;color:var(--accent);font-size:14px;font-weight:600;padding:6px 0;list-style-position:inside}
+.kv-details summary:hover{text-decoration:underline}
+.kv-details[open] summary{margin-bottom:6px}
 .kv-tab{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
 .kv-tab caption{caption-side:top;text-align:left;color:var(--muted);font-size:12px;padding-bottom:8px}
 .kv-tab th,.kv-tab td{padding:6px 8px;border-bottom:1px solid var(--border);text-align:left}
@@ -91,4 +100,4 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .kp-hint{color:var(--muted);font-size:12px;font-weight:400;margin-left:4px}
 .kintro p{color:var(--muted);font-size:14px}.kintro p+p{margin-top:10px}
 .kintro h2{font-size:18px;margin-bottom:10px;color:var(--text)}
-@media(max-width:560px){.kcard-img{flex-basis:100%}.kfakten dl{grid-template-columns:1fr;gap:2px 0}.kfakten dd{margin-bottom:8px}}
+@media(max-width:560px){.kcard-img{flex-basis:100%}.kfakten dl{grid-template-columns:1fr;gap:2px 0}.kfakten dd{margin-bottom:8px}.kv-zahlen{grid-template-columns:repeat(2,1fr)}}
