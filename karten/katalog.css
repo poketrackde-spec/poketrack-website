@@ -75,4 +75,19 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .kappbtn:hover{text-decoration:none;opacity:.9}
 .kf{border-top:1px solid var(--border);padding:30px 20px;text-align:center;max-width:800px;margin:0 auto;color:var(--muted);font-size:12px}
 .kf p{margin-bottom:8px}.kf a{color:var(--muted)}
-@media(max-width:560px){.kcard-img{flex-basis:100%}}
+/* Preisverlauf + Faktenblock */
+.kverlauf,.kfakten,.kintro{margin-top:32px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.kverlauf h2,.kfakten h2{font-size:18px;margin-bottom:10px}
+.kv-text{color:var(--muted);font-size:14px;margin-bottom:14px}
+.kchart{display:block;width:100%;height:120px;margin-bottom:16px}
+.kv-tab{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.kv-tab caption{caption-side:top;text-align:left;color:var(--muted);font-size:12px;padding-bottom:8px}
+.kv-tab th,.kv-tab td{padding:6px 8px;border-bottom:1px solid var(--border);text-align:left}
+.kv-tab th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.kv-tab td:last-child,.kv-tab th:last-child{text-align:right}
+.kfakten dl{display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:8px 20px;font-size:14px}
+.kfakten dt{color:var(--muted)}.kfakten dd{font-weight:600}
+.kp-hint{color:var(--muted);font-size:12px;font-weight:400;margin-left:4px}
+.kintro p{color:var(--muted);font-size:14px}.kintro p+p{margin-top:10px}
+.kintro h2{font-size:18px;margin-bottom:10px;color:var(--text)}
+@media(max-width:560px){.kcard-img{flex-basis:100%}.kfakten dl{grid-template-columns:1fr;gap:2px 0}.kfakten dd{margin-bottom:8px}}
