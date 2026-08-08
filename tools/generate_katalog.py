@@ -214,14 +214,20 @@ def stand_laden():
     Lokal ist die Live-Seite ebenfalls die richtige Bezugsgroesse: Baue ich zweimal
     ohne Deploy, hat sich fuer Google zwischendurch nichts geaendert.
     """
+    # User-Agent ist PFLICHT: GitHub Pages beantwortet den Standardkopf von
+    # urllib ("Python-urllib/3.x") mit 403. Ohne den Header schlaegt das Laden
+    # jede Nacht fehl, der Vergleich findet nie einen Vorstand - und die Sitemap
+    # meldet Google wieder jeden Tag 19.000 Aenderungen.
+    anfrage = urllib.request.Request(f"{BASE}/{STAND_DATEI}",
+                                     headers={"User-Agent": "poketrack-katalog"})
     try:
-        with urllib.request.urlopen(f"{BASE}/{STAND_DATEI}", timeout=30) as r:
+        with urllib.request.urlopen(anfrage, timeout=30) as r:
             daten = json.loads(r.read().decode())
             if isinstance(daten, dict) and daten:
                 print(f"  Vorstand: {len(daten)} URLs von {BASE} geladen")
                 return daten
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"  Vorstand: Live-Abruf fehlgeschlagen ({type(e).__name__}: {e})")
     pfad = os.path.join(OUT, STAND_DATEI)          # Notnagel: letzter lokaler Lauf
     try:
         with open(pfad, encoding="utf-8") as f:
