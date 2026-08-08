@@ -1,0 +1,104 @@
+# ============================================================
+# Baut den Karten-Katalog jede Nacht neu und veroeffentlicht ihn direkt als
+# GitHub-Pages-Artefakt - ohne die ~19.000 erzeugten Seiten zu committen.
+#
+# Warum nicht committen: Ein Vollbau aendert praktisch jede Kartenseite (der
+# naechtliche Cardmarket-Sync haengt an jede Karte einen neuen Verlaufspunkt).
+# Als Commit kostet das rund 20 MB Historie - taeglich waeren das ~7 GB im Jahr.
+# So bleibt im Repo nur die Quelle, und die Seite ist trotzdem jeden Morgen aktuell.
+#
+# Zeitpunkt: 04:00 UTC, eine Stunde nach dem cron-job.org-Sync (03:00 UTC), der
+# die Preise im Backend aktualisiert. Der Katalog holt sie von dort.
+#
+# Voraussetzung (einmalig): Settings -> Pages -> Source = "GitHub Actions".
+# ============================================================
+
+name: Katalog bauen und veroeffentlichen
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:        # Knopf "Run workflow" fuer sofortige Neubauten
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Nie zwei Deploys gleichzeitig; laufende nicht abbrechen, damit ein halb
+# hochgeladenes Artefakt die Live-Seite nicht zerreisst.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  BACKEND: https://poketrack-backend-production.up.railway.app
+
+jobs:
+  bauen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Kartendaten vom Backend holen
+        run: |
+          curl --fail --silent --show-error --location \
+               --retry 5 --retry-delay 15 --retry-all-errors \
+               --max-time 300 \
+               -o db.json "$BACKEND/cards"
+          # Groesse pruefen: german_cards.json ist ~6 MB. Kommt deutlich weniger an,
+          # ist etwas faul (Fehlerseite, halbe Antwort) - dann lieber hier abbrechen
+          # als einen lueckenhaften Katalog zu bauen.
+          groesse=$(stat -c%s db.json)
+          echo "db.json: $groesse Bytes"
+          if [ "$groesse" -lt 4000000 ]; then
+            echo "::error::db.json ist nur $groesse Bytes gross - Abbruch."
+            exit 1
+          fi
+          python -c "import json;d=json.load(open('db.json',encoding='utf-8-sig'));print(f'  {len(d[\"sets\"])} Sets gelesen')"
+
+      - name: Katalog bauen
+        env:
+          KATALOG_OUT: ${{ github.workspace }}
+          KATALOG_DB: ${{ github.workspace }}/db.json
+          KATALOG_SETMETA: ${{ github.workspace }}/tools/setMetadata.ts
+          PYTHONIOENCODING: utf-8
+        run: python tools/generate_katalog.py
+
+      - name: Ergebnis pruefen
+        run: |
+          seiten=$(find karten -name index.html | wc -l)
+          mit_preis=$(grep -rl 'kprice-box' karten --include=index.html | wc -l)
+          echo "Seiten: $seiten, davon mit Preis im HTML: $mit_preis"
+          # Der Katalog hat ~19.200 Seiten. Deutlich weniger heisst: der Lauf ist
+          # unterwegs ausgestiegen - dann bleibt der alte Stand online.
+          if [ "$seiten" -lt 18000 ]; then
+            echo "::error::Nur $seiten Seiten gebaut - Abbruch, es wird nichts veroeffentlicht."
+            exit 1
+          fi
+          if [ "$mit_preis" -lt 15000 ]; then
+            echo "::error::Nur $mit_preis Seiten mit Preis - Backend unvollstaendig? Abbruch."
+            exit 1
+          fi
+
+      - name: Bauzutaten aus der Veroeffentlichung nehmen
+        run: rm -rf db.json tools .github
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  veroeffentlichen:
+    needs: bauen
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
