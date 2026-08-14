@@ -459,6 +459,57 @@ def card_url(set_name, c):
 
 
 # ── Seiten ───────────────────────────────────────────────────────────────────
+def verlauf_rumpf(history, caption):
+    """Text + Chart + Kennzahlen + Tabelle EINER Zeitreihe.
+
+    Ausgelagert, weil es die Reihe inzwischen mehrfach je Karte gibt: Normalpreis,
+    Reverse Holo und ggf. Pokeball/Masterball/Energie. Gibt "" zurueck, wenn die
+    Reihe zu kurz fuer eine Aussage ist (< 2 Messpunkte).
+    """
+    n_punkte, tief, hoch, delta = verlauf_kennzahlen(history)
+    if n_punkte < 2:
+        return ""
+    # ALLE Messwerte, nicht nur die letzten zehn - sie stecken im Aufklapper und
+    # stoeren die Optik nicht mehr.
+    zeilen = "".join(
+        f"<tr><td>{e(datum_de(h['date']))}</td><td>{euro(h['avg_price'])}</td></tr>"
+        for h in reversed(history)
+        if isinstance(h.get("avg_price"), (int, float)))
+    if delta is None or abs(delta) < 0.5:
+        trend = "in diesem Zeitraum nahezu unverändert geblieben"
+    else:
+        prozent = f"{abs(delta):.1f}".replace(".", ",")
+        trend = (f"in diesem Zeitraum um {prozent} % "
+                 f"{'gestiegen' if delta > 0 else 'gefallen'}")
+    text = (f"Seit dem {datum_de(history[0]['date'])} wurden {n_punkte} Tagespreise "
+            f"erfasst. Der Preis lag zwischen {euro(tief)} und {euro(hoch)} und ist "
+            f"{trend}.")
+    aktuell = history[-1]["avg_price"]
+    if delta is None or abs(delta) < 0.5:
+        d_text, d_klasse = "±0 %", ""
+    else:
+        d_text = f"{'+' if delta > 0 else '−'}{abs(delta):.1f}".replace(".", ",") + " %"
+        d_klasse = " kv-up" if delta > 0 else " kv-down"
+    kennzahlen = (
+        '<div class="kv-zahlen">'
+        f'<div class="kv-z"><span>Aktuell</span><b>{euro(aktuell)}</b></div>'
+        f'<div class="kv-z"><span>Tiefstand</span><b>{euro(tief)}</b></div>'
+        f'<div class="kv-z"><span>Höchststand</span><b>{euro(hoch)}</b></div>'
+        f'<div class="kv-z"><span>Veränderung</span><b class="{d_klasse.strip()}">{d_text}</b></div>'
+        '</div>')
+    return f"""<p class="kv-text">{text}</p>
+  {preischart(history)}
+  {kennzahlen}
+  <details class="kv-details">
+    <summary>Alle {n_punkte} erfassten Tagespreise anzeigen</summary>
+    <table class="kv-tab">
+      <caption>{e(caption)}</caption>
+      <thead><tr><th>Datum</th><th>Preis</th></tr></thead>
+      <tbody>{zeilen}</tbody>
+    </table>
+  </details>"""
+
+
 def render_card(set_name, c, prev_c=None, next_c=None, set_reverse_types=None,
                 pdata=None, set_info=None):
     name = c["name"]
@@ -536,50 +587,50 @@ def render_card(set_name, c, prev_c=None, next_c=None, set_reverse_types=None,
     # Graph als Inline-SVG UND als Tabelle. Die Tabelle ist der eigentliche Punkt:
     # Suchmaschinen lesen Text, keine Kurven - und datierte Messwerte sind Inhalt,
     # den es sonst nirgends gibt.
+    # Eine Reihe je Variante mit eigener Zeitreihe. Der Reverse-Verlauf kommt seit
+    # heute gebuendelt aus /set-prices mit ("variants") - vorher zeigte die Seite
+    # bei einer Reverse-Karte den Normalpreis-Verlauf, was bei Karten wie
+    # EX Smaragd 70/106 (0,19 EUR normal, 200 EUR reverse) grob irrefuehrend war.
+    reihen = []
+    rumpf_normal = verlauf_rumpf(history, "Cardmarket, deutsch, Zustand Near Mint")
+    if rumpf_normal:
+        reihen.append(("Normal", rumpf_normal))
+    vhist = (pdata or {}).get("variants") or {}
+    for vk in card_reverse_variants(c, set_reverse_types):
+        vlabel = VARIANT_NAME.get(vk, "Reverse")
+        rumpf = verlauf_rumpf(vhist.get(vk) or [], f"Cardmarket, deutsch, {vlabel}")
+        if rumpf:
+            reihen.append((vlabel, rumpf))
+    # Das CSS deckt kv-p0 bis kv-p4 ab. Aktuell hat kein Set mehr als drei
+    # Reverse-Varianten (also hoechstens vier Reihen), aber lieber abschneiden
+    # als ein Panel bauen, das sich nicht einblenden laesst.
+    reihen = reihen[:5]
+
     verlauf_block = ""
-    if n_punkte >= 2:
-        # ALLE Messwerte, nicht nur die letzten zehn - sie stecken im Aufklapper und
-        # stoeren die Optik nicht mehr.
-        zeilen = "".join(
-            f"<tr><td>{e(datum_de(h['date']))}</td><td>{euro(h['avg_price'])}</td></tr>"
-            for h in reversed(history)
-            if isinstance(h.get("avg_price"), (int, float)))
-        if delta is None or abs(delta) < 0.5:
-            trend = "in diesem Zeitraum nahezu unverändert geblieben"
-        else:
-            prozent = f"{abs(delta):.1f}".replace(".", ",")
-            trend = (f"in diesem Zeitraum um {prozent} % "
-                     f"{'gestiegen' if delta > 0 else 'gefallen'}")
-        text = (f"Seit dem {datum_de(history[0]['date'])} wurden {n_punkte} Tagespreise "
-                f"erfasst. Der Preis lag zwischen {euro(tief)} und {euro(hoch)} und ist "
-                f"{trend}.")
-        aktuell = history[-1]["avg_price"]
-        if delta is None or abs(delta) < 0.5:
-            d_text, d_klasse = "±0 %", ""
-        else:
-            d_text = f"{'+' if delta > 0 else '−'}{abs(delta):.1f}".replace(".", ",") + " %"
-            d_klasse = " kv-up" if delta > 0 else " kv-down"
-        kennzahlen = (
-            '<div class="kv-zahlen">'
-            f'<div class="kv-z"><span>Aktuell</span><b>{euro(aktuell)}</b></div>'
-            f'<div class="kv-z"><span>Tiefstand</span><b>{euro(tief)}</b></div>'
-            f'<div class="kv-z"><span>Höchststand</span><b>{euro(hoch)}</b></div>'
-            f'<div class="kv-z"><span>Veränderung</span><b class="{d_klasse.strip()}">{d_text}</b></div>'
-            '</div>')
+    if len(reihen) == 1:
         verlauf_block = f"""
 <section class="kverlauf">
   <h2>Preisentwicklung von {e(name)} {e(nummer_disp)}</h2>
-  <p class="kv-text">{text}</p>
-  {preischart(history)}
-  {kennzahlen}
-  <details class="kv-details">
-    <summary>Alle {n_punkte} erfassten Tagespreise anzeigen</summary>
-    <table class="kv-tab">
-      <caption>Cardmarket, deutsch, Zustand Near Mint</caption>
-      <thead><tr><th>Datum</th><th>Preis</th></tr></thead>
-      <tbody>{zeilen}</tbody>
-    </table>
-  </details>
+  {reihen[0][1]}
+</section>"""
+    elif reihen:
+        # Umschalter ohne JavaScript: versteckte Radios, die per :checked das
+        # zugehoerige Panel einblenden. Die Panels bleiben dabei im HTML stehen -
+        # Suchmaschinen lesen also alle Tabellen, nicht nur die sichtbare.
+        radios = "".join(
+            f'<input class="kv-radio kv-r{i}" type="radio" name="kvtab" '
+            f'id="kv-{i}"{" checked" if i == 0 else ""}>'
+            for i, _ in enumerate(reihen))
+        labels = "".join(f'<label for="kv-{i}">{e(lbl)}</label>'
+                         for i, (lbl, _) in enumerate(reihen))
+        panels = "".join(f'<div class="kv-panel kv-p{i}">{rumpf}</div>'
+                         for i, (_, rumpf) in enumerate(reihen))
+        verlauf_block = f"""
+<section class="kverlauf kv-tabbed">
+  <h2>Preisentwicklung von {e(name)} {e(nummer_disp)}</h2>
+  {radios}
+  <div class="kv-leiste">{labels}</div>
+  <div class="kv-panels">{panels}</div>
 </section>"""
 
     # ── Faktenblock ─────────────────────────────────────────────────────────
@@ -890,6 +941,23 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .kv-z span{color:var(--muted);font-size:12px}
 .kv-z b{font-size:16px;font-variant-numeric:tabular-nums}
 .kv-up{color:#5FD38D}.kv-down{color:#F07A7A}
+/* Varianten-Umschalter im Preisverlauf - reines CSS, kein JavaScript.
+   Die Radios bleiben fokussierbar (nur transparent), damit der Umschalter
+   auch per Tastatur bedienbar ist; display:none wuerde das kaputt machen. */
+.kv-radio{position:absolute;opacity:0;width:0;height:0}
+.kv-leiste{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.kv-leiste label{cursor:pointer;padding:6px 14px;border:1px solid var(--border);border-radius:999px;font-size:13px;font-weight:600;color:var(--muted);background:var(--dark);user-select:none}
+.kv-leiste label:hover{color:var(--text)}
+.kv-panel{display:none}
+.kv-r0:checked~.kv-panels>.kv-p0,.kv-r1:checked~.kv-panels>.kv-p1,
+.kv-r2:checked~.kv-panels>.kv-p2,.kv-r3:checked~.kv-panels>.kv-p3,
+.kv-r4:checked~.kv-panels>.kv-p4{display:block}
+.kv-r0:checked~.kv-leiste label[for="kv-0"],.kv-r1:checked~.kv-leiste label[for="kv-1"],
+.kv-r2:checked~.kv-leiste label[for="kv-2"],.kv-r3:checked~.kv-leiste label[for="kv-3"],
+.kv-r4:checked~.kv-leiste label[for="kv-4"]{background:var(--accent);border-color:var(--accent);color:#0B1220}
+.kv-r0:focus-visible~.kv-leiste label[for="kv-0"],.kv-r1:focus-visible~.kv-leiste label[for="kv-1"],
+.kv-r2:focus-visible~.kv-leiste label[for="kv-2"],.kv-r3:focus-visible~.kv-leiste label[for="kv-3"],
+.kv-r4:focus-visible~.kv-leiste label[for="kv-4"]{outline:2px solid var(--accent);outline-offset:2px}
 .kv-details{margin-top:14px}
 .kv-details summary{cursor:pointer;color:var(--accent);font-size:14px;font-weight:600;padding:6px 0;list-style-position:inside}
 .kv-details summary:hover{text-decoration:underline}
