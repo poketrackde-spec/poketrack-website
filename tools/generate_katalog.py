@@ -979,6 +979,154 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 _CHANGED = set()  # relative Pfade, deren Inhalt sich ggue. dem deployten Stand geaendert hat
 
 
+ARTIKEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "artikel")
+
+DATUM_LANG = ["", "Januar", "Februar", "März", "April", "Mai", "Juni",
+              "Juli", "August", "September", "Oktober", "November", "Dezember"]
+
+
+def artikel_bauen(sterne, reverse_daten):
+    """Schreibt die Ratgeber-Artikel mit den Preisen des heutigen Laufs.
+
+    Der Prosatext steht in tools/artikel/ und ist handgeschrieben; ersetzt werden
+    nur die {{PLATZHALTER}} - Galerie, Tabellen, Kennzahlen, Datum.
+
+    Faellt die Preisabfrage aus, bleibt die bereits veroeffentlichte Datei stehen,
+    statt mit leeren Tabellen ueberschrieben zu werden: Ein Artikel mit gestrigen
+    Preisen ist deutlich besser als einer ohne.
+    """
+    heute = datetime.date.today()
+    stand = f"{heute.day}. {DATUM_LANG[heute.month]} {heute.year}"
+
+    # ── Gold Stars ──────────────────────────────────────────────────────────
+    mit_preis = [s for s in sterne if s["preis"]]
+    if len(mit_preis) < 10:
+        print(f"  ⚠ Artikel Gold Stars uebersprungen: nur {len(mit_preis)} Preise")
+    else:
+        sortiert = sorted(sterne, key=lambda s: -(s["preis"] or 0))
+        karten = "\n".join(
+            f'  <figure class="gs-karte">\n'
+            f'    <img src="{e(s["bild"])}" alt="{e(s["name"])} ☆ {e(s["nummer"])} aus {e(s["set"])}"'
+            f' loading="lazy" width="245" height="342">\n'
+            f'    <figcaption>\n'
+            f'      <b><a href="{e(s["url"])}">{e(s["name"])} ☆</a></b>\n'
+            f'      <span>{e(s["set"])} · {e(s["nummer"])}</span>\n'
+            f'      <strong class="gs-preis">{euro(s["preis"]) if s["preis"] else "kein Angebot"}</strong>\n'
+            f'    </figcaption>\n  </figure>' for s in sortiert)
+        itemlist = json.dumps({
+            "@context": "https://schema.org", "@type": "ItemList",
+            "name": "Gold Stars der EX-Ära", "numberOfItems": len(sortiert),
+            "itemListElement": [
+                {"@type": "ListItem", "position": i + 1,
+                 "name": f'{s["name"]} ☆ ({s["set"]} {s["nummer"]})',
+                 "url": s["url"]}
+                for i, s in enumerate(sortiert)],
+        }, ensure_ascii=False)
+
+        ohne = [s for s in sortiert if not s["preis"]]
+        if ohne:
+            namen = ", ".join(f'{s["name"]} ☆ aus {s["set"]}' for s in ohne)
+            titel = "Ohne Angebot" if len(ohne) > 1 else f'Ohne Angebot: {ohne[0]["name"]} ☆'
+            text = (f"Für {namen} gibt es auf Cardmarket derzeit kein einziges deutsches "
+                    f"Angebot. Das ist kein Datenfehler, sondern der Normalzustand bei "
+                    f"Karten dieser Seltenheit: Es kommt vor, dass wochenlang kein "
+                    f"Exemplar auf dem Markt ist.")
+        else:
+            titel = "Aktuell sind alle Sterne zu haben"
+            text = ("Derzeit steht für jede Gold Star mindestens ein deutsches Angebot. "
+                    "Das ist nicht selbstverständlich — bei Karten dieser Seltenheit "
+                    "kommt es vor, dass einzelne wochenlang gar nicht handelbar sind.")
+
+        # Beide aus der sortierten Liste: mit_preis steht in Quellreihenfolge,
+        # dessen letzter Eintrag ist irgendeine Karte, nicht die guenstigste.
+        bepreist = [s for s in sortiert if s["preis"]]
+        teuerste, guenstigste = bepreist[0], bepreist[-1]
+        artikel_schreiben("gold-stars-ex-aera.html", {
+            "STAND": stand, "STAND_ISO": heute.isoformat(),
+            "GS_ANZAHL": str(len(sortiert)),
+            "GS_GALERIE": f'<div class="gs-galerie">\n{karten}\n</div>',
+            "GS_ITEMLIST": itemlist,
+            "GS_MAX_NAME": f'{teuerste["name"]} ☆',
+            "GS_MAX_PREIS": euro(teuerste["preis"]),
+            "GS_MAX_BILD": teuerste["bild"],
+            "GS_MIN_NAME": f'{guenstigste["name"]} ☆',
+            "GS_MIN_PREIS": euro(guenstigste["preis"]),
+            "GS_OHNE_TITEL": titel, "GS_OHNE_TEXT": text,
+        })
+
+    # ── Reverse Holo ────────────────────────────────────────────────────────
+    if len(reverse_daten) < 200:
+        print(f"  ⚠ Artikel Reverse uebersprungen: nur {len(reverse_daten)} Preise")
+        return
+
+    preise = sorted(d["reverse"] for d in reverse_daten)
+    median = preise[len(preise) // 2]
+    unter5 = sum(1 for p in preise if p < 5)
+
+    mit_verhaeltnis = sorted(
+        (d for d in reverse_daten if d["normal"] and d["normal"] > 0),
+        key=lambda d: -(d["reverse"] / d["normal"]))
+    top = mit_verhaeltnis[:8]
+    zeilen = "".join(
+        f'<tr><td><span class="mini"><img src="{e(d["bild"])}" alt="{e(d["name"])} '
+        f'{e(d["nummer"])} aus {e(d["set"])}" loading="lazy" width="44" height="61">'
+        f'<a href="{e(d["url"])}">{e(d["name"])} {e(d["nummer"])}</a></span></td>'
+        f'<td>{e(d["set"])}</td><td class="z">{euro(d["normal"])}</td>'
+        f'<td class="z">{euro(d["reverse"])}</td>'
+        f'<td class="z">{d["reverse"] / d["normal"]:.0f}×</td>'
+        f'<td class="z">{d["angebote"] or "–"}</td></tr>' for d in top)
+    abstaende = (
+        '<div class="tabelle">\n<table>\n'
+        f'<caption>Größte Preisabstände Reverse zu Normal, deutsche Karten, Stand {stand}</caption>\n'
+        '<thead><tr><th>Karte</th><th>Set</th><th class="z">Normal</th>'
+        '<th class="z">Reverse</th><th class="z">Faktor</th><th class="z">Angebote</th></tr></thead>\n'
+        f'<tbody>{zeilen}</tbody>\n</table>\n</div>')
+
+    je_set = {}
+    for d in reverse_daten:
+        je_set.setdefault(d["set"], []).append(d["reverse"])
+    reihen = sorted(((s, len(v), sorted(v)[len(v) // 2], max(v))
+                     for s, v in je_set.items()), key=lambda r: -r[2])
+    mz = "".join(
+        f'<tr><td><a href="/karten/{slug(s)}/">{e(s)}</a></td><td class="z">{n}</td>'
+        f'<td class="z">{euro(med)}</td><td class="z">{euro(mx)}</td></tr>'
+        for s, n, med, mx in reihen)
+    mediane = (
+        '<div class="tabelle">\n<table>\n'
+        '<caption>Reverse-Preise je Set: Anzahl erfasster Karten, Median und Höchstwert</caption>\n'
+        '<thead><tr><th>Set</th><th class="z">Karten</th><th class="z">Median</th>'
+        '<th class="z">Maximum</th></tr></thead>\n'
+        f'<tbody>{mz}</tbody>\n</table>\n</div>')
+
+    spitze = mit_verhaeltnis[0]
+    artikel_schreiben("reverse-holo-ex-aera.html", {
+        "STAND": stand, "STAND_ISO": heute.isoformat(),
+        "RV_ANZAHL": f"{len(reverse_daten):,}".replace(",", "."),
+        "RV_SETS": str(len(je_set)),
+        "RV_MEDIAN": euro(median), "RV_UNTER5": str(unter5),
+        "RV_ABSTAENDE": abstaende, "RV_MEDIANE": mediane,
+        "RV_TOP_NAME": spitze["name"], "RV_TOP_SET": spitze["set"],
+        "RV_TOP_NORMAL": euro(spitze["normal"]), "RV_TOP_REVERSE": euro(spitze["reverse"]),
+        "RV_TOP_BILD": spitze["bild"],
+    })
+
+
+def artikel_schreiben(datei, werte):
+    pfad = os.path.join(ARTIKEL_DIR, datei)
+    if not os.path.exists(pfad):
+        print(f"  ⚠ Vorlage fehlt: {pfad}")
+        return
+    html = open(pfad, encoding="utf-8").read()
+    for k, v in werte.items():
+        html = html.replace("{{" + k + "}}", str(v))
+    offen = re.findall(r"\{\{[A-Z_0-9]+\}\}", html)
+    if offen:
+        print(f"  ⚠ {datei}: unbefuellte Platzhalter {sorted(set(offen))} - nicht geschrieben")
+        return
+    write(f"ratgeber/{datei}", html)
+    print(f"  Ratgeber: {datei} mit tagesaktuellen Preisen geschrieben")
+
+
 def write(path, content):
     full = os.path.join(OUT, path)
     os.makedirs(os.path.dirname(full), exist_ok=True)
@@ -1032,6 +1180,10 @@ def main(only_set=None):
     stand_alt = stand_laden()
     n_cards = 0
     n_noindex = 0
+    # Rohdaten fuer die Ratgeber-Artikel, waehrend des Laufs eingesammelt - so
+    # braucht es keinen zweiten Durchgang durch alle Sets.
+    artikel_sterne = []
+    artikel_reverse = []
     for si, (set_name, cards) in enumerate(sets, 1):
         meta = _meta(set_meta, set_name)
         set_rt = meta.get("reverseTypes") or ["reverse"]
@@ -1055,6 +1207,25 @@ def main(only_set=None):
         print(f"  [{si}/{len(sets)}] {set_name}: {priced}/{len(cards)} bepreist, "
               f"Normal {total:.2f} + Reverse {reverse_total:.2f} EUR")
 
+        # Rohdaten fuer die Ratgeber-Artikel. Nur die EX-Aera - genau darueber
+        # schreiben beide Artikel. "Star" trifft sonst auch die Prism-Star-Karten
+        # der modernen Sets, die nichts mit Gold Stars zu tun haben.
+        if set_name.startswith("EX "):
+            for c, p in zip(cards, prices):
+                anzeige = "EX Holon Phantoms" if set_name == "EX Holo Phantoms" else set_name
+                u = BASE + card_url(set_name, c)
+                if "Star" in (c.get("seltenheit") or ""):
+                    artikel_sterne.append({
+                        "set": anzeige, "nummer": c["nummer"], "name": c["name"],
+                        "bild": c.get("bild_url") or "", "url": u, "preis": p})
+                rp = (c.get("variant_preise") or {}).get("reverse") or {}
+                if isinstance(rp.get("preis"), (int, float)):
+                    artikel_reverse.append({
+                        "set": anzeige, "nummer": c["nummer"], "name": c["name"],
+                        "bild": c.get("bild_url") or "", "url": u,
+                        "reverse": rp["preis"], "normal": p,
+                        "angebote": rp.get("angebote")})
+
         write(f"karten/{slug(set_name)}/index.html",
               render_set(set_name, cards, total, priced, reverse_total, reverse_priced))
         urls.append(f"{BASE}/karten/{slug(set_name)}/")
@@ -1072,6 +1243,8 @@ def main(only_set=None):
                 urls.append(BASE + c["_url"])
                 preis_je_url[c["_url"]] = prices[i]   # Schluessel = Pfad, wie in stand.json
             n_cards += 1
+
+    artikel_bauen(artikel_sterne, artikel_reverse)
 
     # Sitemap – <lastmod> nur bumpen, wenn sich der PREIS geaendert hat.
     #
