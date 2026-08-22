@@ -430,7 +430,7 @@ def head(title, desc, canonical, og_image=None, noindex=False):
 </head>
 <body>
 <nav class="kn"><a href="/" class="kn-logo">Poké<span>Track</span></a>
-<div class="kn-links"><a href="/karten/">Katalog</a><a href="{APPSTORE}" class="kn-cta">App laden</a></div></nav>
+<div class="kn-links"><a href="/karten/">Katalog</a><a href="/ratgeber/">Ratgeber</a><a href="{APPSTORE}" class="kn-cta">App laden</a></div></nav>
 <div class="kpage">{ad_rail(ADSENSE_SLOT_LEFT, "left")}
 """
 
