@@ -223,6 +223,64 @@ nav {
   display: block;
 }
 
+/* ── Magazin-Kacheln auf der Startseite ─────────────────────────────────
+   Wie .feature-card, aber mit Kartenbild links. Das Bild traegt die Kachel:
+   ohne Abbildung ist ein Textkasten unter sechs anderen Textkaesten genau
+   das, was vorher niemand angeklickt hat.                               */
+.mag-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.mag-card {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.mag-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(240, 180, 41, 0.3);
+}
+
+.mag-card img {
+  width: 84px;
+  height: 117px;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.mag-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.mag-card p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.mag-card .mag-mehr {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
 .feature-card h3 {
   font-size: 17px;
   font-weight: 700;

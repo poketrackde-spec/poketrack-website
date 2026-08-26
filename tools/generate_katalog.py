@@ -430,7 +430,7 @@ def head(title, desc, canonical, og_image=None, noindex=False):
 </head>
 <body>
 <nav class="kn"><a href="/" class="kn-logo">Poké<span>Track</span></a>
-<div class="kn-links"><a href="/karten/">Katalog</a><a href="/ratgeber/">Ratgeber</a><a href="{APPSTORE}" class="kn-cta">App laden</a></div></nav>
+<div class="kn-links"><a href="/karten/">Katalog</a><a href="/magazin/">Magazin</a><a href="{APPSTORE}" class="kn-cta">App laden</a></div></nav>
 <div class="kpage">{ad_rail(ADSENSE_SLOT_LEFT, "left")}
 """
 
@@ -986,7 +986,7 @@ DATUM_LANG = ["", "Januar", "Februar", "März", "April", "Mai", "Juni",
 
 
 def artikel_bauen(sterne, reverse_daten):
-    """Schreibt die Ratgeber-Artikel mit den Preisen des heutigen Laufs.
+    """Schreibt die Magazin-Artikel mit den Preisen des heutigen Laufs.
 
     Der Prosatext steht in tools/artikel/ und ist handgeschrieben; ersetzt werden
     nur die {{PLATZHALTER}} - Galerie, Tabellen, Kennzahlen, Datum.
@@ -1123,8 +1123,8 @@ def artikel_schreiben(datei, werte):
     if offen:
         print(f"  ⚠ {datei}: unbefuellte Platzhalter {sorted(set(offen))} - nicht geschrieben")
         return
-    write(f"ratgeber/{datei}", html)
-    print(f"  Ratgeber: {datei} mit tagesaktuellen Preisen geschrieben")
+    write(f"magazin/{datei}", html)
+    print(f"  Magazin: {datei} mit tagesaktuellen Preisen geschrieben")
 
 
 def write(path, content):
@@ -1180,7 +1180,7 @@ def main(only_set=None):
     stand_alt = stand_laden()
     n_cards = 0
     n_noindex = 0
-    # Rohdaten fuer die Ratgeber-Artikel, waehrend des Laufs eingesammelt - so
+    # Rohdaten fuer die Magazin-Artikel, waehrend des Laufs eingesammelt - so
     # braucht es keinen zweiten Durchgang durch alle Sets.
     artikel_sterne = []
     artikel_reverse = []
@@ -1207,7 +1207,7 @@ def main(only_set=None):
         print(f"  [{si}/{len(sets)}] {set_name}: {priced}/{len(cards)} bepreist, "
               f"Normal {total:.2f} + Reverse {reverse_total:.2f} EUR")
 
-        # Rohdaten fuer die Ratgeber-Artikel. Nur die EX-Aera - genau darueber
+        # Rohdaten fuer die Magazin-Artikel. Nur die EX-Aera - genau darueber
         # schreiben beide Artikel. "Star" trifft sonst auch die Prism-Star-Karten
         # der modernen Sets, die nichts mit Gold Stars zu tun haben.
         if set_name.startswith("EX "):
