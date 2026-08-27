@@ -19,6 +19,13 @@ on:
   schedule:
     - cron: "0 4 * * *"
   workflow_dispatch:        # Knopf "Run workflow" fuer sofortige Neubauten
+  # Auch bei jedem Push auf main. Ohne das gehen Aenderungen an der Website
+  # erst mit dem naechsten Nachtlauf online - und der ist nicht verlaesslich:
+  # GitHub fuehrt Zeitplan-Laeufe nur nach bestem Bemuehen aus, Verzoegerungen
+  # von Stunden sind normal, gelegentlich faellt einer aus. Am 27.08.2026 stand
+  # eine fertige Aenderung deshalb zwoelf Stunden lang nicht online.
+  push:
+    branches: [main]
 
 permissions:
   contents: read
