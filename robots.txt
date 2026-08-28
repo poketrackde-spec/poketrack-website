@@ -4,3 +4,8 @@ Disallow:
 
 Sitemap: https://poketrack.de/sitemap.xml
 Sitemap: https://poketrack.de/karten/sitemap.xml
+# Nur Katalog- und Set-Seiten. Dieselben URLs stehen auch in der grossen Sitemap
+# darueber - das ist erlaubt. Der Zweck ist die Abdeckungsanzeige der Search
+# Console, die je Sitemap ausgewiesen wird: In der Datei mit 18.800 Karten sieht
+# man sonst nicht, ob die Set-Seiten indexiert werden.
+Sitemap: https://poketrack.de/karten/sitemap-sets.xml

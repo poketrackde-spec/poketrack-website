@@ -1264,6 +1264,17 @@ def main(only_set=None):
             old_lastmod[m.group(1)] = m.group(2)
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    # Zusaetzliche, kleine Sitemap NUR mit Katalog- und Set-Seiten.
+    #
+    # Rein zur Messung: Die Search Console weist Abdeckung je Sitemap aus. In einer
+    # Datei mit 18.800 Karten geht unter, ob die 138 Set-Seiten ankommen - und
+    # genau die haben das groessere Suchvolumen und die schwaechere Konkurrenz.
+    #
+    # Die URLs stehen damit in zwei Sitemaps. Das ist erlaubt, Google fuehrt sie
+    # zusammen; die Alternative waere gewesen, die bestehende, sorgfaeltig
+    # abgestimmte Datei umzubauen - mehr Risiko fuer denselben Erkenntnisgewinn.
+    sm_sets = ['<?xml version="1.0" encoding="UTF-8"?>',
+               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     stand_neu = {}
     n_neu = n_karten_url = 0
     for u in urls:
@@ -1285,12 +1296,17 @@ def main(only_set=None):
                 lastmod, n_neu = today, n_neu + 1
             else:
                 lastmod = old_lastmod.get(u, today)
+            sm_sets.append(f"<url><loc>{u}</loc><lastmod>{lastmod}</lastmod></url>")
         sm.append(f"<url><loc>{u}</loc><lastmod>{lastmod}</lastmod></url>")
     sm.append("</urlset>")
+    sm_sets.append("</urlset>")
     write("karten/sitemap.xml", "\n".join(sm))
+    write("karten/sitemap-sets.xml", "\n".join(sm_sets))
     write(STAND_DATEI, json.dumps(stand_neu, separators=(",", ":")))
     print(f"  Sitemap: {n_neu}/{len(urls)} URLs mit neuem lastmod ({today}), "
           f"Rest behaelt altes Datum")
+    print(f"  Set-Sitemap: {len(sm_sets) - 3} Katalog-/Set-Seiten "
+          f"-> karten/sitemap-sets.xml")
     print(f"  Stand fortgeschrieben: {len(stand_neu)} Kartenpreise -> {STAND_DATEI}")
 
     print(f"Generiert: {len(sets)} Sets, {n_cards} Karten, {len(urls)} URLs -> {OUT}")
