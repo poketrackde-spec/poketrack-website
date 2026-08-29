@@ -985,7 +985,7 @@ DATUM_LANG = ["", "Januar", "Februar", "März", "April", "Mai", "Juni",
               "Juli", "August", "September", "Oktober", "November", "Dezember"]
 
 
-def artikel_bauen(sterne, reverse_daten):
+def artikel_bauen(sterne, reverse_daten, teuerste=(), set_daten=()):
     """Schreibt die Magazin-Artikel mit den Preisen des heutigen Laufs.
 
     Der Prosatext steht in tools/artikel/ und ist handgeschrieben; ersetzt werden
@@ -997,6 +997,102 @@ def artikel_bauen(sterne, reverse_daten):
     """
     heute = datetime.date.today()
     stand = f"{heute.day}. {DATUM_LANG[heute.month]} {heute.year}"
+
+    def _tsd(n):
+        """12345 -> '12.345'"""
+        return f"{n:,}".replace(",", ".")
+
+    # ── Teuerste Karten ─────────────────────────────────────────────────────
+    if len(teuerste) < 500:
+        print(f"  ⚠ Artikel Bestenliste uebersprungen: nur {len(teuerste)} Preise")
+    else:
+        rang = sorted(teuerste, key=lambda d: -d["preis"])
+        zeilen = "".join(
+            f'<tr><td class="z">{i}</td>'
+            f'<td><span class="mini"><img src="{e(d["bild"])}" alt="{e(d["name"])} '
+            f'{e(d["nummer"])} aus {e(d["set"])}" loading="lazy" width="44" height="61">'
+            f'<a href="{e(d["url"])}">{e(d["name"])} {e(d["nummer"])}</a></span></td>'
+            f'<td><a href="/karten/{slug(d["set"])}/">{e(d["set"])}</a></td>'
+            f'<td>{e(d["seltenheit"]) or "–"}</td>'
+            f'<td class="z">{euro(d["preis"])}</td></tr>'
+            for i, d in enumerate(rang[:25], 1))
+        bestenliste = (
+            '<div class="tabelle">\n<table>\n'
+            f'<caption>Die 25 teuersten deutschen Karten im Katalog, Stand {stand}</caption>\n'
+            '<thead><tr><th class="z">#</th><th>Karte</th><th>Set</th>'
+            '<th>Seltenheit</th><th class="z">Preis</th></tr></thead>\n'
+            f'<tbody>{zeilen}</tbody>\n</table>\n</div>')
+
+        werte = [d["preis"] for d in rang]
+        # Verteilung je Set unter den ersten 100 - zeigt, wo die teuren Karten sitzen.
+        je_set = {}
+        for d in rang[:100]:
+            je_set[d["set"]] = je_set.get(d["set"], 0) + 1
+        sz = "".join(
+            f'<tr><td><a href="/karten/{slug(s)}/">{e(s)}</a></td>'
+            f'<td class="z">{n}</td></tr>'
+            for s, n in sorted(je_set.items(), key=lambda kv: -kv[1])[:10])
+        sets_tabelle = (
+            '<div class="tabelle">\n<table>\n'
+            '<caption>Aus welchen Sets die 100 teuersten Karten stammen</caption>\n'
+            '<thead><tr><th>Set</th><th class="z">Karten in den Top 100</th></tr></thead>\n'
+            f'<tbody>{sz}</tbody>\n</table>\n</div>')
+
+        spitze = rang[0]
+        artikel_schreiben("teuerste-karten.html", {
+            "STAND": stand, "STAND_ISO": heute.isoformat(),
+            "TK_ANZAHL": _tsd(len(rang)),
+            "TK_TABELLE": bestenliste, "TK_SETS": sets_tabelle,
+            "TK_TOP_NAME": spitze["name"], "TK_TOP_SET": spitze["set"],
+            "TK_TOP_NUMMER": spitze["nummer"], "TK_TOP_PREIS": euro(spitze["preis"]),
+            "TK_TOP_BILD": spitze["bild"], "TK_TOP_URL": spitze["url"],
+            "TK_UEBER100": _tsd(sum(1 for p in werte if p >= 100)),
+            "TK_UEBER1000": _tsd(sum(1 for p in werte if p >= 1000)),
+            "TK_MEDIAN": euro(sorted(werte)[len(werte) // 2]),
+            "TK_UNTER1": _tsd(sum(1 for p in werte if p < 1)),
+        })
+
+    # ── Was ein komplettes Set kostet ───────────────────────────────────────
+    #
+    # Nur Sets, bei denen mindestens vier von fuenf Karten einen Preis haben.
+    # Sonst waere die Summe eine Untergrenze, die wie eine Gesamtsumme aussieht -
+    # und ein halb bepreistes Set stuende faelschlich als "guenstig" ganz unten.
+    brauchbar = [s for s in set_daten
+                 if s["anzahl"] and s["bepreist"] >= s["anzahl"] * 0.8 and s["teuerste"]]
+    if len(brauchbar) < 20:
+        print(f"  ⚠ Artikel Komplettpreise uebersprungen: nur {len(brauchbar)} Sets")
+    else:
+        nach_summe = sorted(brauchbar, key=lambda s: -s["summe"])
+        zeilen = "".join(
+            f'<tr><td><a href="{e(s["url"])}">{e(s["set"])}</a></td>'
+            f'<td class="z">{s["anzahl"]}</td>'
+            f'<td class="z">{s["bepreist"] * 100 // s["anzahl"]} %</td>'
+            f'<td class="z">{euro(s["summe"])}</td>'
+            f'<td><a href="{e(s["teuerste"]["url"])}">{e(s["teuerste"]["name"])}</a> '
+            f'<span class="mut">{euro(s["teuerste"]["preis"])}</span></td></tr>'
+            for s in nach_summe)
+        komplett = (
+            '<div class="tabelle">\n<table>\n'
+            f'<caption>Summe aller Kartenpreise je Set, Stand {stand}</caption>\n'
+            '<thead><tr><th>Set</th><th class="z">Karten</th><th class="z">bepreist</th>'
+            '<th class="z">Summe</th><th>teuerste Karte</th></tr></thead>\n'
+            f'<tbody>{zeilen}</tbody>\n</table>\n</div>')
+
+        teuerstes, guenstigstes = nach_summe[0], nach_summe[-1]
+        artikel_schreiben("set-komplettpreise.html", {
+            "STAND": stand, "STAND_ISO": heute.isoformat(),
+            "SK_SETS": str(len(brauchbar)),
+            "SK_TABELLE": komplett,
+            "SK_GESAMT": euro(sum(s["summe"] for s in brauchbar)),
+            "SK_TEUER_NAME": teuerstes["set"], "SK_TEUER_SUMME": euro(teuerstes["summe"]),
+            "SK_TEUER_KARTEN": str(teuerstes["anzahl"]),
+            "SK_TEUER_TOP": teuerstes["teuerste"]["name"],
+            "SK_TEUER_TOP_PREIS": euro(teuerstes["teuerste"]["preis"]),
+            "SK_TEUER_BILD": teuerstes["teuerste"]["bild"],
+            "SK_GUENSTIG_NAME": guenstigstes["set"],
+            "SK_GUENSTIG_SUMME": euro(guenstigstes["summe"]),
+            "SK_GUENSTIG_KARTEN": str(guenstigstes["anzahl"]),
+        })
 
     # ── Gold Stars ──────────────────────────────────────────────────────────
     mit_preis = [s for s in sterne if s["preis"]]
@@ -1184,6 +1280,9 @@ def main(only_set=None):
     # braucht es keinen zweiten Durchgang durch alle Sets.
     artikel_sterne = []
     artikel_reverse = []
+    # Anders als die beiden EX-Artikel werten diese hier ALLE Sets aus.
+    artikel_teuerste = []   # jede bepreiste Karte - fuer Bestenliste und Verteilung
+    artikel_sets = []       # je Set ein Aggregat - fuer die Komplettpreise
     for si, (set_name, cards) in enumerate(sets, 1):
         meta = _meta(set_meta, set_name)
         set_rt = meta.get("reverseTypes") or ["reverse"]
@@ -1206,6 +1305,24 @@ def main(only_set=None):
         reverse_total, reverse_priced = sum(rev_vals), len(rev_vals)
         print(f"  [{si}/{len(sets)}] {set_name}: {priced}/{len(cards)} bepreist, "
               f"Normal {total:.2f} + Reverse {reverse_total:.2f} EUR")
+
+        # Rohdaten fuer die set-uebergreifenden Artikel (Bestenliste,
+        # Komplettpreise). Hier zaehlt jedes Set, nicht nur die EX-Aera.
+        teuerste_im_set = None
+        for c, p in zip(cards, prices):
+            if not p:
+                continue
+            eintrag = {"set": set_name, "nummer": c["nummer"], "name": c["name"],
+                       "bild": c.get("bild_url") or "", "preis": p,
+                       "seltenheit": c.get("seltenheit") or "",
+                       "url": BASE + card_url(set_name, c)}
+            artikel_teuerste.append(eintrag)
+            if teuerste_im_set is None or p > teuerste_im_set["preis"]:
+                teuerste_im_set = eintrag
+        artikel_sets.append({
+            "set": set_name, "url": f"/karten/{slug(set_name)}/",
+            "anzahl": len(cards), "bepreist": priced, "summe": total,
+            "era": meta.get("era") or "", "teuerste": teuerste_im_set})
 
         # Rohdaten fuer die Magazin-Artikel. Nur die EX-Aera - genau darueber
         # schreiben beide Artikel. "Star" trifft sonst auch die Prism-Star-Karten
@@ -1244,7 +1361,7 @@ def main(only_set=None):
                 preis_je_url[c["_url"]] = prices[i]   # Schluessel = Pfad, wie in stand.json
             n_cards += 1
 
-    artikel_bauen(artikel_sterne, artikel_reverse)
+    artikel_bauen(artikel_sterne, artikel_reverse, artikel_teuerste, artikel_sets)
 
     # Sitemap – <lastmod> nur bumpen, wenn sich der PREIS geaendert hat.
     #
