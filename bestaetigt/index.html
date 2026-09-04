@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Mail bestätigt – PokéTrack</title>
+  <meta name="description" content="Deine E-Mail-Adresse für PokéTrack ist bestätigt. Du kannst dich jetzt in der App anmelden." />
+  <!-- noindex: Diese Seite hat fuer die Suche keinen Wert und wuerde das
+       Crawl-Budget von den Katalogseiten abziehen. Ausserdem haengen an der
+       Adresse nach der Weiterleitung Anmelde-Token im Fragment. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://poketrack.de/bestaetigt/" />
+  <link rel="stylesheet" href="/style.css?v=6" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <style>
+    .bestaetigt {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 64px 20px 96px;
+      text-align: center;
+    }
+    .bestaetigt .haken {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 28px;
+      border-radius: 50%;
+      background: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      line-height: 1;
+      color: #0F1F33;
+      font-weight: 700;
+    }
+    .bestaetigt h1 {
+      font-size: 30px;
+      line-height: 1.2;
+      margin: 0 0 16px;
+      color: var(--text);
+    }
+    .bestaetigt p {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--text-muted);
+      margin: 0 0 20px;
+    }
+    .bestaetigt .schritte {
+      text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 26px;
+      margin: 32px 0 28px;
+    }
+    .bestaetigt .schritte ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .bestaetigt .schritte li + li { margin-top: 8px; }
+    .bestaetigt .klein {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .bestaetigt .knopf {
+      display: inline-block;
+      background: var(--accent);
+      color: #0F1F33;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      padding: 14px 30px;
+      border-radius: var(--radius);
+    }
+    @media (max-width: 480px) {
+      .bestaetigt { padding-top: 40px; }
+      .bestaetigt h1 { font-size: 25px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" style="text-decoration:none">Poké<span>Track</span></a>
+    <div class="nav-links">
+      <a href="/">← Zur Startseite</a>
+    </div>
+  </div>
+</nav>
+
+<div class="bestaetigt">
+
+  <div class="haken" aria-hidden="true">✓</div>
+
+  <h1>E-Mail-Adresse bestätigt</h1>
+
+  <p>
+    Danke – dein PokéTrack-Konto ist jetzt aktiv.
+  </p>
+
+  <div class="schritte">
+    <ol>
+      <li>Zurück zur PokéTrack-App wechseln</li>
+      <li><strong>Einstellungen → Konto</strong> öffnen</li>
+      <li>Mit deiner E-Mail-Adresse und deinem Passwort anmelden</li>
+    </ol>
+  </div>
+
+  <p>
+    Ab dann steht deine Sammlung auf allen deinen Geräten. Erfasste Karten
+    werden im Hintergrund abgeglichen – ein Gerätewechsel kostet dich keine
+    Karte mehr.
+  </p>
+
+  <p style="margin-top:28px">
+    <a class="knopf" href="https://apps.apple.com/de/app/id6790953375">PokéTrack öffnen</a>
+  </p>
+
+  <p class="klein">
+    Diese Seite kannst du jetzt schließen. Falls die Anmeldung in der App nicht
+    klappt, schreib uns an
+    <a href="mailto:poketrackde@gmail.com">poketrackde@gmail.com</a>.
+  </p>
+
+</div>
+
+</body>
+</html>
