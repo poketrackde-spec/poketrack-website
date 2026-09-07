@@ -2,6 +2,30 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
+  <!--
+    Tiefe Adressen der Web-App durchreichen.
+
+    Die Web-App unter /app/ ist eine einzige index.html; Adressen wie
+    /app/karte/xy-1 sind keine Dateien und landen deshalb beim Neuladen hier.
+    GitHub Pages kennt nur diese eine 404.html im Wurzelverzeichnis, also muss
+    sie den Fall mit erledigen: Pfad anhaengen, zur App schicken, dort schreibt
+    das Skript in index.html ihn zurueck in die Adresszeile.
+
+    Steht ganz oben und ohne Abhaengigkeiten, damit es laeuft, bevor irgendein
+    Stylesheet geladen wird - sonst blitzt die Fehlerseite kurz auf.
+  -->
+  <script>
+    (function () {
+      var pfad = window.location.pathname;
+      if (pfad === '/app' || pfad.indexOf('/app/') === 0) {
+        var rest = pfad.slice('/app'.length) || '/';
+        window.location.replace(
+          '/app/?p=' + encodeURIComponent(rest) +
+          window.location.search.replace('?', '&') + window.location.hash
+        );
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Seite nicht gefunden – PokéTrack</title>
   <meta name="description" content="Diese Seite gibt es nicht mehr. Weiter zum Kartenkatalog von PokéTrack." />
