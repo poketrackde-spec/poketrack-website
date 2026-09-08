@@ -7,7 +7,11 @@
 #   karten/katalog.css                         – geteilte Styles
 #   karten/<set>/index.html                    – Set-Seite (Karten-Grid)
 #   karten/<set>/<nr>-<name>/index.html        – Karten-Detailseite
-#   karten/sitemap.xml                         – alle Katalog-URLs
+#   karten/sitemap.xml                         – alle Katalog-URLs (erzeugt,
+#                                                aber seit 08.09.2026 nicht
+#                                                mehr in robots.txt angemeldet)
+#   karten/sitemap-sets.xml                    – nur Katalog- und Set-Seiten
+#                                                (das ist die angemeldete)
 #
 # Preise:
 #   - Sondervarianten (Pokeball/Masterball) werden aus variant_preise GEBACKEN
@@ -1381,15 +1385,21 @@ def main(only_set=None):
             old_lastmod[m.group(1)] = m.group(2)
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    # Zusaetzliche, kleine Sitemap NUR mit Katalog- und Set-Seiten.
+    # Kleine Sitemap NUR mit Katalog- und Set-Seiten. Seit 08.09.2026 ist das
+    # die EINZIGE angemeldete Katalog-Sitemap (siehe robots.txt).
     #
-    # Rein zur Messung: Die Search Console weist Abdeckung je Sitemap aus. In einer
-    # Datei mit 18.800 Karten geht unter, ob die 138 Set-Seiten ankommen - und
-    # genau die haben das groessere Suchvolumen und die schwaechere Konkurrenz.
+    # Sie war urspruenglich nur zur Messung gedacht: Die Search Console weist
+    # Abdeckung je Sitemap aus, und in einer Datei mit 18.800 Karten geht unter,
+    # ob die 138 Set-Seiten ankommen - genau die haben das groessere Suchvolumen
+    # und die schwaechere Konkurrenz. Die Messung hat dann geliefert, warum sie
+    # jetzt die Hauptrolle spielt: 18.401 URLs standen auf "Gefunden - zurzeit
+    # nicht indexiert", nur 11 auf "Gecrawlt". Google hat die Kartenseiten nie
+    # abgerufen, weil das Crawl-Budget einer jungen Domain 18.437 URLs nicht
+    # hergibt.
     #
-    # Die URLs stehen damit in zwei Sitemaps. Das ist erlaubt, Google fuehrt sie
-    # zusammen; die Alternative waere gewesen, die bestehende, sorgfaeltig
-    # abgestimmte Datei umzubauen - mehr Risiko fuer denselben Erkenntnisgewinn.
+    # Die grosse Datei wird weiter geschrieben - sie haelt die lastmod-Historie
+    # der Set-Seiten (old_lastmod oben liest sie), und ohne sie bekaemen beim
+    # Zurueckdrehen alle 18.437 URLs auf einen Schlag das heutige Datum.
     sm_sets = ['<?xml version="1.0" encoding="UTF-8"?>',
                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     stand_neu = {}
