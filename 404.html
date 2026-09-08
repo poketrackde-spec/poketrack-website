@@ -13,17 +13,31 @@
 
     Steht ganz oben und ohne Abhaengigkeiten, damit es laeuft, bevor irgendein
     Stylesheet geladen wird - sonst blitzt die Fehlerseite kurz auf.
+
+    WICHTIG sind die zwei Ausnahmen unten. Ohne sie dreht sich die Seite im
+    Kreis, sobald die App selbst fehlt: /app/ waere dann auch ein 404, wir
+    schickten nach /app/ weiter, das waere wieder ein 404 - endlos, und der
+    Besucher saehe nie, was los ist. Genau der Fall trat beim ersten
+    Veroeffentlichen ein, solange GitHub Pages noch nicht fertig war.
   -->
   <script>
     (function () {
       var pfad = window.location.pathname;
-      if (pfad === '/app' || pfad.indexOf('/app/') === 0) {
-        var rest = pfad.slice('/app'.length) || '/';
-        window.location.replace(
-          '/app/?p=' + encodeURIComponent(rest) +
-          window.location.search.replace('?', '&') + window.location.hash
-        );
-      }
+      if (pfad !== '/app' && pfad.indexOf('/app/') !== 0) return;
+
+      var rest = pfad.slice('/app'.length) || '/';
+
+      // 1. /app/ selbst ist die App. Landet DAS hier, fehlt die App - dann
+      //    hilft kein Weiterleiten, sondern nur die Fehlerseite.
+      if (rest === '/') return;
+
+      // 2. Ein bereits gesetztes ?p= heisst: Wir waren schon einmal hier.
+      if (window.location.search.indexOf('p=') !== -1) return;
+
+      window.location.replace(
+        '/app/?p=' + encodeURIComponent(rest) +
+        window.location.search.replace('?', '&') + window.location.hash
+      );
     })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
