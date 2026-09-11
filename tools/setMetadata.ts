@@ -194,6 +194,57 @@ export const SET_METADATA: Record<string, SetMeta> = {
   'Basisset':                                 { era: 'Grundserie', logo: TCG('base1') },
 };
 
+/**
+ * Englischer Setname -> deutsches Gegenstueck, fuer die Sets mit Sonder-Reverse.
+ *
+ * Dieselbe physische Karte hat in jeder Sprache dieselben Druckvarianten. Statt
+ * die reverseTypes zu verdoppeln (und beim naechsten Set zwei Stellen pflegen zu
+ * muessen), zeigt der englische Name auf den bestehenden deutschen Eintrag.
+ */
+const EN_SET_ALIAS: Record<string, string> = {
+  'Ascended Heroes':      'Erhabene Helden',
+  'Prismatic Evolutions': 'Prismatische Entwicklungen',
+  'Black Bolt':           'Schwarze Blitze',
+  'White Flare':          'Weiße Flammen',
+};
+
 export function getSetMeta(setName: string): SetMeta {
-  return SET_METADATA[setName] ?? { era: 'Weitere Sets' };
+  const treffer = SET_METADATA[setName];
+  if (treffer) return treffer;
+  // Bewusst NUR die reverseTypes uebernehmen. Aera und Logo kommen bei
+  // englischen Sets aus dem Katalog selbst (sets_cache.logo_url bzw. series);
+  // wuerde der Alias den deutschen Eintrag komplett durchreichen, saehe ein
+  // englisches Set ploetzlich das deutsche Logo und die deutsche Aera.
+  const deName = EN_SET_ALIAS[setName];
+  if (deName) return { era: 'Weitere Sets', reverseTypes: SET_METADATA[deName]?.reverseTypes };
+  return { era: 'Weitere Sets' };
+}
+
+/**
+ * Die Aeren-Namen auf Englisch.
+ *
+ * Die Aera wird intern immer deutsch gefuehrt - sie ist der Schluessel, nach
+ * dem gruppiert und sortiert wird (ERA_ORDER), und der englische Importer
+ * uebernimmt sie vom deutschen Gegenstueck. Uebersetzt wird deshalb erst beim
+ * Zeichnen; wuerde man die Werte selbst umbenennen, fiele die Gruppierung
+ * auseinander.
+ *
+ * Was fehlt, bleibt stehen: 'XY', 'Neo' und 'HeartGold & SoulSilver' heissen in
+ * beiden Sprachen gleich.
+ */
+const AERA_ENGLISCH: Record<string, string> = {
+  'Mega Entwicklung': 'Mega Evolution',
+  'Karmesin & Purpur': 'Scarlet & Violet',
+  'Schwert & Schild': 'Sword & Shield',
+  'Sonne & Mond': 'Sun & Moon',
+  'Schwarz & Weiß': 'Black & White',
+  'Platin': 'Platinum',
+  'Diamant & Perl': 'Diamond & Pearl',
+  'EX-Serie': 'EX Series',
+  'E-Karten': 'e-Card Series',
+  'Grundserie': 'Base Series',
+};
+
+export function aeraName(era: string, sprache: 'de' | 'en'): string {
+  return sprache === 'de' ? era : (AERA_ENGLISCH[era] ?? era);
 }
