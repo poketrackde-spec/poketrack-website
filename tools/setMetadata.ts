@@ -29,8 +29,7 @@ export const ERA_ORDER = [
 
 export const SET_METADATA: Record<string, SetMeta> = {
   // ── Karmesin & Purpur ───────────────────────────────────────────────
-  '30th Anniversary Celebration':             { era: 'Karmesin & Purpur' },
-  'Schwarze Blitze':                          { era: 'Karmesin & Purpur', logo: 'https://images.poketrack.de/schwarze-blitze.png', reverseTypes: ['reverse_pokeball', 'reverse_masterball', 'reverse'] },
+  'Schwarze Blitze':                        { era: 'Karmesin & Purpur', logo: 'https://images.poketrack.de/schwarze-blitze.png', reverseTypes: ['reverse_pokeball', 'reverse_masterball', 'reverse'] },
   'Weiße Flammen':                            { era: 'Karmesin & Purpur', logo: 'https://images.poketrack.de/weisse-flammen.png', reverseTypes: ['reverse_pokeball', 'reverse_masterball', 'reverse'] },
   'Ewige Rivalen':                            { era: 'Karmesin & Purpur', logo: 'https://images.poketrack.de/ewige-rivalen.png' },
   'Reisegefährten':                           { era: 'Karmesin & Purpur', logo: 'https://images.poketrack.de/reisgefahrten.png' },
@@ -55,6 +54,10 @@ export const SET_METADATA: Record<string, SetMeta> = {
   'Fatale Flammen':                           { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/Fatale-Flammen-Logo.png' },
   'Mega-Entwicklung':                         { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/Mega-Entwicklung.png' },
   'Dunkelnacht':                              { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/dunkel-nacht-1781868747.png' },
+  // Beide Jubilaeumssets teilen sich dasselbe Logo - die Quelle liefert fuer
+  // Haupt- und Subset dieselbe Bilddatei (byte-identisch geprueft).
+  '30 Jahre':                                 { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/30-jahre.png' },
+  '30 Jahre - Klassische Sammlung':           { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/30-jahre.png' },
   'Mega Entwicklung Promos':                  { era: 'Mega Entwicklung' },
 
   // ── Schwert & Schild ────────────────────────────────────────────────
