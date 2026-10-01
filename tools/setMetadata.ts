@@ -248,6 +248,8 @@ const AERA_ENGLISCH: Record<string, string> = {
   'Grundserie': 'Base Series',
 };
 
-export function aeraName(era: string, sprache: 'de' | 'en'): string {
+// Japanische Sets bekommen die englischen Aera-Namen: Der Katalog fuehrt
+// ohnehin englische Kartennamen, eine deutsche Aera darueber waere ein Bruch.
+export function aeraName(era: string, sprache: 'de' | 'en' | 'jp'): string {
   return sprache === 'de' ? era : (AERA_ENGLISCH[era] ?? era);
 }
