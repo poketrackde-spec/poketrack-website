@@ -211,6 +211,24 @@ const EN_SET_ALIAS: Record<string, string> = {
   'White Flare':          'Weiße Flammen',
 };
 
+/**
+ * Karten, die nur zum Master Set zaehlen: Im normalen Set werden sie weder
+ * angezeigt noch mitgezaehlt (Kachel, Fortschritt, "bis komplett"). Schluessel
+ * ist der Setname aus dem Katalog, Werte die Kartennummern wie im Katalog.
+ */
+const NUR_MASTER: Record<string, string[]> = {
+  // Die drei RGB-Mew - Sonderkarten ausserhalb der Setnummerierung.
+  '30th Celebration': ['R/RGB', 'G/RGB', 'B/RGB'],
+};
+
+export function istNurMaster(setName: string | null | undefined, nummer: string | null | undefined): boolean {
+  return !!setName && !!nummer && (NUR_MASTER[setName]?.includes(nummer) ?? false);
+}
+
+export function nurMasterAnzahl(setName: string): number {
+  return NUR_MASTER[setName]?.length ?? 0;
+}
+
 export function getSetMeta(setName: string): SetMeta {
   const treffer = SET_METADATA[setName];
   if (treffer) return treffer;
