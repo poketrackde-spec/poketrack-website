@@ -58,7 +58,7 @@ export const SET_METADATA: Record<string, SetMeta> = {
   // Haupt- und Subset dieselbe Bilddatei (byte-identisch geprueft).
   '30 Jahre':                                 { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/30-jahre.png' },
   '30 Jahre - Klassische Sammlung':           { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/30-jahre.png' },
-  'Mega Entwicklung Promos':                  { era: 'Mega Entwicklung' },
+  'Mega Entwicklung Promos':                  { era: 'Mega Entwicklung', logo: TCG('svp') },  // eigenes Logo gibt es nicht - wie Karmesin & Purpur Promos
 
   // ── Schwert & Schild ────────────────────────────────────────────────
   'Zenit der Könige':                         { era: 'Schwert & Schild', logo: 'https://images.poketrack.de/zenit-der-konige-erweiterung.png' },
