@@ -219,6 +219,8 @@ const EN_SET_ALIAS: Record<string, string> = {
 const NUR_MASTER: Record<string, string[]> = {
   // Die drei RGB-Mew - Sonderkarten ausserhalb der Setnummerierung.
   '30th Celebration': ['R/RGB', 'G/RGB', 'B/RGB'],
+  // Dieselben drei im deutschen Set (Katalog-Eintrag folgt mit 1.4.1).
+  '30 Jahre': ['R/RGB', 'G/RGB', 'B/RGB'],
 };
 
 export function istNurMaster(setName: string | null | undefined, nummer: string | null | undefined): boolean {
