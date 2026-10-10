@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Datenschutzerklärung – PokéTrack</title>
-  <meta name="description" content="Datenschutzerklärung der PokéTrack App gemäß DSGVO und DSG 2018. Informationen zur Datenverarbeitung, AdMob, eBay Partnernetzwerk und deinen Rechten." />
+  <meta name="description" content="Datenschutzerklärung der PokéTrack App gemäß DSGVO und DSG 2018. Informationen zur Datenverarbeitung, Werbung, In-App-Käufen, Nutzerkonto, Preisalarm, anonymer Statistik und deinen Rechten." />
   <meta name="robots" content="noindex, follow" />
   <link rel="canonical" href="https://poketrack.de/datenschutz.html" />
   <link rel="stylesheet" href="style.css?v=6" />
@@ -24,7 +24,7 @@
 
 <div class="legal-page">
   <h1>Datenschutzerklärung</h1>
-  <span class="legal-date">Stand: Juni 2026</span>
+  <span class="legal-date">Stand: Oktober 2026</span>
 
   <div class="legal-section">
     <h2>1. Verantwortlicher</h2>
@@ -33,7 +33,8 @@
 
   <div class="legal-section">
     <h2>2a. Lokale Daten</h2>
-    <p>Die App speichert deine Kartensammlung ausschließlich lokal auf deinem Gerät. Diese Daten werden nicht an uns übertragen und können jederzeit durch Deinstallation der App gelöscht werden.</p>
+    <p>Ohne Nutzerkonto speichert die App deine Kartensammlung ausschließlich lokal auf deinem Gerät. Diese Daten werden dann nicht bei uns gespeichert und können jederzeit durch Deinstallation der App gelöscht werden. Für den Wochenrückblick wird die Kartenliste kurz an unseren Server geschickt, aber nicht gespeichert – siehe 2h.</p>
+    <p style="margin-top:12px">Legst du ein Konto an, wird deine Sammlung zusätzlich auf unserem Server gespeichert – siehe Abschnitt 2f.</p>
   </div>
 
   <div class="legal-section">
@@ -43,30 +44,71 @@
 
   <div class="legal-section">
     <h2>2c. Werbung (Google AdMob)</h2>
-    <p>Die App nutzt Google AdMob zur Anzeige von Werbung. AdMob kann dabei Gerätekennungen (Advertising ID), IP-Adresse und Nutzungsverhalten verarbeiten, um personalisierte oder nicht-personalisierte Werbung anzuzeigen.</p>
-    <p style="margin-top:12px">Weitere Informationen: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a></p>
-    <p style="margin-top:12px">Personalisierte Werbung kannst du deaktivieren unter:<br>
-    iOS: Einstellungen → Datenschutz &amp; Sicherheit → Tracking</p>
+    <p>Die App nutzt Google AdMob zur Anzeige von Werbung. AdMob kann dabei Gerätekennungen (Advertising ID), IP-Adresse und Nutzungsverhalten verarbeiten. Weitere Informationen: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></p>
+    <p style="margin-top:12px">Personalisierte Werbung kannst du deaktivieren unter:<br>iOS: Einstellungen → Datenschutz &amp; Sicherheit → Tracking</p>
   </div>
 
   <div class="legal-section">
     <h2>2d. eBay Partnernetzwerk</h2>
-    <p>Bei Klick auf eBay-Links wird eine Verbindung zu eBay hergestellt. eBay kann dabei Daten gemäß eigener Datenschutzerklärung verarbeiten. Weitere Informationen: <a href="https://www.ebay.de/help/policies/member-behaviour-policies/datenschutzerklarung" target="_blank">ebay.de/help</a></p>
+    <p>Bei Klick auf eBay-Links wird eine Verbindung zu eBay hergestellt. eBay kann dabei Daten gemäß eigener Datenschutzerklärung verarbeiten (ebay.de/help).</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>2e. In-App-Käufe (RevenueCat)</h2>
+    <p>Für die Abwicklung des Kaufs „PokéTrack Pro" nutzen wir RevenueCat, Inc. (USA). Dabei werden eine zufällig erzeugte, anonyme Kennung sowie der vom App Store bzw. von Google Play ausgestellte Kaufbeleg verarbeitet, um zu prüfen, ob der Kauf gültig ist. Wir erhalten dabei weder deinen Namen noch deine Zahlungsdaten – diese verbleiben beim jeweiligen Store. Weitere Informationen: <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener">revenuecat.com/privacy</a></p>
+    <p style="margin-top:12px">Ohne Kauf findet keine Übermittlung statt.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>2f. Nutzerkonto und Abgleich (Supabase)</h2>
+    <p>Legst du ein Konto an, verarbeiten wir deine E-Mail-Adresse und ein verschlüsseltes Abbild deines Passworts sowie die Daten deiner Sammlung und Wunschliste: Karte, Zustand, Variante, Anzahl sowie – falls du sie einträgst – Einkaufspreis und Kaufdatum. Bilder, Marktpreise und Katalogangaben gehören nicht dazu, sie stammen aus der App selbst.</p>
+    <p style="margin-top:12px">Dafür nutzen wir Supabase als Auftragsverarbeiter. Die Daten liegen in einem Rechenzentrum in Frankfurt am Main (EU). Der Zugriff ist technisch auf dein eigenes Konto beschränkt: Andere Nutzer können deine Daten nicht abrufen, auch nicht versehentlich.</p>
+    <p style="margin-top:12px">Zur Absicherung gegen Datenverlust erstellen wir täglich eine Sicherung. Sie wird bei Cloudflare R2 mit vertraglich zugesicherter Speicherung in der EU abgelegt und nach 30 Tagen automatisch gelöscht.</p>
+    <p style="margin-top:12px">Löschst du dein Konto in der App, werden deine Daten sofort aus der Datenbank entfernt. Aus den Sicherungen verschwinden sie spätestens nach 30 Tagen.</p>
+    <p style="margin-top:12px">Für den Versand der Kontomails – Bestätigung der Adresse und Zurücksetzen des Passworts – nutzen wir Resend als Auftragsverarbeiter mit Verarbeitung in der EU (Irland). Übermittelt wird dabei nur deine E-Mail-Adresse, keine Daten deiner Sammlung.</p>
+    <p style="margin-top:12px">Ohne Konto findet keine dieser Verarbeitungen statt.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>2g. Preisalarm (Push-Mitteilungen)</h2>
+    <p>Richtest du mit PokéTrack Pro einen Preisalarm ein, speichern wir in deinem Konto (siehe 2f) die Karte, den Zielpreis und ob du bei einem Preis darunter oder darüber benachrichtigt werden willst. Erlaubst du dabei Mitteilungen, speichern wir außerdem eine Gerätekennung für Mitteilungen (Push-Token), die Plattform deines Geräts und die Sprache der App.</p>
+    <p style="margin-top:12px">Einmal täglich vergleicht unser Server die Zielpreise mit den aktuellen Marktpreisen. Erreicht ein Preis den Zielpreis, prüfen wir bei RevenueCat (siehe 2e), ob Pro aktiv ist, und versenden die Mitteilung über den Push-Dienst von Expo (650 Industries, Inc., USA), der sie zur Zustellung an Apple bzw. Google weiterreicht. Übermittelt werden dabei nur das Push-Token und der Text der Mitteilung – Kartenname, aktueller Preis und dein Zielpreis –, nicht deine E-Mail-Adresse und keine weiteren Daten deiner Sammlung.</p>
+    <p style="margin-top:12px">Die Gerätekennung wird gelöscht, wenn du dich abmeldest oder dein Konto löschst, und automatisch, sobald Apple bzw. Google sie als ungültig meldet. Mitteilungen kannst du jederzeit in den Einstellungen deines Geräts abschalten.</p>
+    <p style="margin-top:12px">Ohne Preisalarm und ohne erteilte Erlaubnis für Mitteilungen findet keine dieser Verarbeitungen statt.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>2h. Wochenrückblick</h2>
+    <p>Für den Wochenrückblick im Statistik-Tab schickt die App die Liste deiner Karten – Name, Nummer, Set, Sprache und Anzahl – an unseren Server (siehe 2b). Er berechnet daraus die Preisveränderung der letzten 7 Tage und schickt das Ergebnis zurück. Die Liste wird dabei nicht gespeichert, und es wird keine Nutzerkennung mitgeschickt.</p>
+    <p style="margin-top:12px">Ist „Jeden Sonntag als Mitteilung“ eingeschaltet – das ist voreingestellt, sobald du Mitteilungen erlaubst – und bist du mit einem Konto angemeldet, berechnet unser Server den Rückblick sonntags aus der Sammlung in deinem Konto (siehe 2f) und versendet ihn wie in 2g beschrieben über Expo. Übermittelt werden nur das Push-Token und der Text der Mitteilung – die Wertveränderung deiner Sammlung und der Name der Karte mit dem größten Gewinn. Dafür speichern wir an deiner Gerätekennung, dass der Rückblick eingeschaltet ist.</p>
+    <p style="margin-top:12px">Ohne Konto plant die App die Erinnerung selbst auf deinem Gerät, dabei wird nichts an uns übertragen.</p>
+    <p style="margin-top:12px">Du kannst den Rückblick jederzeit im Statistik-Tab oder in den Einstellungen deines Geräts abschalten.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>2i. Anonyme Nutzungsstatistik</h2>
+    <p>Um PokéTrack zu verbessern, werten wir aus, wie die App genutzt wird – ausschließlich in Summen und ohne Nutzer- oder Gerätekennung.</p>
+    <p style="margin-top:12px">Öffnest du eine Kartenseite, zählt unser Server beim Abruf des Preisverlaufs (siehe 2b), wie oft diese Karte an diesem Tag angesehen wurde. Gespeichert werden nur Karte, Datum und Anzahl.</p>
+    <p style="margin-top:12px">Einmal am Tag schickt die App eine kurze Meldung mit Zahlen an unseren Server: wie oft die App gestartet und der Scanner benutzt wurde, wie oft welche Bildschirme geöffnet und welche Funktionen benutzt wurden (etwa Teilen, Karte hinzufügen, Preisalarm setzen, Kauf von Pro gestartet, abgeschlossen oder abgebrochen – jeweils nur als Anzahl), App-Version, Plattform, die Woche der ersten Nutzung sowie ob Pro und ein Konto genutzt werden. Einmal pro Woche schickt sie außerdem eine Zusammenfassung: Anzahl, Wert und Einkaufswert deiner Karten, welche Karten in deiner Sammlung und auf deiner Wunschliste stehen, die Kartensprachen, Suchbegriffe der Kartensuche, wie oft die App gestartet und der Scanner benutzt wurde, die Woche der ersten Nutzung, App-Version, Plattform, Sprache der App, die gewählte Darstellung (hell oder dunkel) sowie ob Pro, ein Konto und der Wochenrückblick genutzt werden. Die Meldungen enthalten keine Kennung; zwei Meldungen derselben App können wir nicht einander zuordnen. Deine IP-Adresse wird dabei nicht gespeichert.</p>
+    <p style="margin-top:12px">Nutzt du ein Konto, werten wir zusätzlich die Daten in den Konten (siehe 2f und 2g) nur in Summen aus, etwa die meistgesammelten Karten oder den durchschnittlichen Wert einer Sammlung. Einzelne Nutzer werden dabei nicht betrachtet.</p>
+    <p style="margin-top:12px">Die Meldungen kannst du jederzeit in den Einstellungen unter „Anonyme Statistik“ abschalten. Rechtsgrundlage ist unser berechtigtes Interesse an der Verbesserung der App (Art. 6 Abs. 1 lit. f DSGVO).</p>
   </div>
 
   <div class="legal-section">
     <h2>3. Rechtsgrundlage</h2>
     <p>Die Datenverarbeitung erfolgt auf Basis von Art. 6 Abs. 1 lit. f DSGVO i.V.m. § 1 DSG (Datenschutzgesetz 2018) sowie bei Werbeeinwilligung auf Basis von Art. 6 Abs. 1 lit. a DSGVO.</p>
+    <p style="margin-top:12px">Für das Nutzerkonto, den Abgleich deiner Sammlung, den Preisalarm und den Wochenrückblick (Abschnitte 2f, 2g und 2h) ist die Rechtsgrundlage Art. 6 Abs. 1 lit. b DSGVO – die Verarbeitung ist erforderlich, um die von dir angeforderte Leistung zu erbringen.</p>
   </div>
 
   <div class="legal-section">
     <h2>4. Deine Rechte</h2>
-    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten sowie das Recht auf Datenübertragbarkeit. Zur Ausübung deiner Rechte wende dich an: <a href="mailto:poketrackde@gmail.com">poketrackde@gmail.com</a></p>
+    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten sowie auf Datenübertragbarkeit. Kontakt: <a href="mailto:poketrackde@gmail.com">poketrackde@gmail.com</a></p>
+    <p style="margin-top:12px">Zwei dieser Rechte kannst du direkt in der App ausüben, ohne uns zu schreiben: Dein Konto löschst du unter „Einstellungen → Konto → Konto löschen". Eine Kopie deiner Sammlung erhältst du unter „Einstellungen → Sammlung exportieren" als CSV-Datei.</p>
   </div>
 
   <div class="legal-section">
     <h2>5. Beschwerderecht</h2>
-    <p>Du hast das Recht, dich bei der österreichischen Datenschutzbehörde zu beschweren: <a href="https://www.dsb.gv.at" target="_blank">dsb.gv.at</a></p>
+    <p>Du hast das Recht, dich bei der österreichischen Datenschutzbehörde (<a href="https://www.dsb.gv.at" target="_blank" rel="noopener">dsb.gv.at</a>) zu beschweren.</p>
   </div>
 </div>
 
