@@ -48,6 +48,10 @@ export const SET_METADATA: Record<string, SetMeta> = {
   'Karmesin & Purpur Promos':                 { era: 'Karmesin & Purpur', logo: TCG('svp') },
 
   // ── Mega Entwicklung ────────────────────────────────────────────────
+  // Erscheint am 06.11.2026 - bis dahin steht es als Platzhalter im Sets-Tab
+  // (services/kommendeSets.ts). Der Eintrag hier sorgt dafuer, dass es danach
+  // mit Logo in der richtigen Aera landet.
+  'Delta-Herrschaft':                         { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/delta-herrschaft.png' },
   'Wachsendes Chaos':                         { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/wachsendes-chaos.png' },
   'Optimale Ordnung':                         { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/optimale_ordnung.png' },
   'Erhabene Helden':                          { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/erhabene-helden.png', reverseTypes: ['reverse_energie', 'reverse_pokeball'] },
