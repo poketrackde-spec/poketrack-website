@@ -235,7 +235,27 @@ export function nurMasterAnzahl(setName: string): number {
   return NUR_MASTER[setName]?.length ?? 0;
 }
 
+/**
+ * "1. Edition"-Sets: eigene Sets im Katalog, eine Kopie des Originals unter
+ * eigenem Namen ('Basisset 1. Edition', 'Base 1st Edition' - angelegt vom
+ * Scraper-Skript erste_edition.py). Erkannt werden sie allein am Namenszusatz;
+ * Aera, Logo und Platz kommen vom Original.
+ *
+ * -> Name des Originals, oder null fuer ein gewoehnliches Set.
+ */
+const ERSTE_EDITION_ZUSAETZE = [' 1. Edition', ' 1st Edition'];
+
+export function ersteEditionVon(setName: string | null | undefined): string | null {
+  if (!setName) return null;
+  for (const zusatz of ERSTE_EDITION_ZUSAETZE) {
+    if (setName.endsWith(zusatz)) return setName.slice(0, -zusatz.length);
+  }
+  return null;
+}
+
 export function getSetMeta(setName: string): SetMeta {
+  const original = ersteEditionVon(setName);
+  if (original) return getSetMeta(original);
   const treffer = SET_METADATA[setName];
   if (treffer) return treffer;
   // Bewusst NUR die reverseTypes uebernehmen. Aera und Logo kommen bei
