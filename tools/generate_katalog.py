@@ -222,12 +222,12 @@ SPRACHEN = {
     "de": {
         "code": "de", "pfad": "karten", "flag": FLAG_DE,
         "wort_gross": "Deutsch", "sets_wort": "deutschen",
-        "quelle": "Cardmarket, deutsch, Near Mint",
+        "quelle": "günstigstes deutsches Angebot, Near Mint",
         "quelle_satz": "die günstigsten deutschen Angebote in Zustand Near Mint",
-        "ref_label": "Referenzpreis (Cardmarket, Normal)",
-        "notiz": "Preise sind Cardmarket-Niedrigpreise (Near Mint, deutsch) und dienen als Orientierung.",
+        "ref_label": "Referenzpreis (Normal)",
+        "notiz": "Preise sind die günstigsten deutschen Angebote im Zustand Near Mint und dienen als Orientierung.",
         "fakt_label": "Günstigstes Angebot", "fakt_zusatz": "(Near Mint, deutsch)",
-        "preis_wort": "Cardmarket-Preis",
+        "preis_wort": "aktueller Preis",
     },
     "en": {
         "code": "en", "pfad": "karten/englisch", "flag": FLAG_EN,
@@ -869,11 +869,11 @@ def render_index(sets_items, set_meta, era_order):
     if SP["code"] == "en":
         title = "Englische Pokémon-Karten – alle Sets & Preise | PokéTrack"
         desc = (f"Alle {n_sets} englischen Pokémon-Sets mit {n_k} Karten und aktuellen "
-                "TCGplayer-Marktpreisen in Euro. Sammlung & Werte tracken mit der PokéTrack-App.")
+                "Marktpreisen in Euro. Sammlung & Werte tracken mit der PokéTrack-App.")
     else:
         title = "Pokémon-Karten-Katalog (deutsch) – alle Sets & Preise | PokéTrack"
         desc = (f"Durchsuche alle {n_sets} deutschen Pokémon-Sets mit {n_k} Karten und aktuellen "
-                "Cardmarket-Preisen. Sammlung & Werte tracken mit der PokéTrack-App.")
+                "Preisen. Sammlung & Werte tracken mit der PokéTrack-App.")
 
     # Nach Aera gruppieren, db.json-Reihenfolge der Sets beibehalten
     by_era = {}
@@ -911,7 +911,7 @@ und den aktuellen Marktpreis.</p>
 gehandelt werden. Wir rechnen sie täglich zum Referenzkurs der Europäischen Zentralbank
 in Euro um und zeichnen für jede Karte den Preisverlauf auf.</p>
 <p>Deutsche Karten findest du im <a href="/karten/">deutschen Katalog</a> mit
-Cardmarket-Preisen. In der PokéTrack-App liegen beide Sprachen in einer Sammlung.</p>
+den günstigsten deutschen Angeboten. In der PokéTrack-App liegen beide Sprachen in einer Sammlung.</p>
 </section>"""
     else:
         intro = f"""<section class="kintro">
@@ -919,8 +919,8 @@ Cardmarket-Preisen. In der PokéTrack-App liegen beide Sprachen in einer Sammlun
 <p>Hier sind {n_karten} Karten aus {len(sets_items)} auf Deutsch erschienenen
 Pokémon-Sets erfasst — von der Basisserie aus dem Jahr 1999 bis zu den aktuellen
 Erweiterungen. Zu jeder Karte findest du die Kartennummer, die Seltenheit, den
-Kartentyp und den günstigsten deutschen Cardmarket-Preis in Zustand Near Mint.</p>
-<p>Die Preise stammen aus einem täglichen Abgleich mit Cardmarket. Wo eine Karte
+Kartentyp und das günstigste deutsche Angebot in Zustand Near Mint.</p>
+<p>Die Preise werden täglich neu erhoben. Wo eine Karte
 zusätzlich als Reverse Holo existiert — oder in Sonderformen wie Pokéball- und
 Masterball-Muster — wird diese Variante getrennt bepreist, weil sich ihr Wert
 deutlich vom normalen Druck unterscheiden kann. Für jede Karte zeichnen wir
@@ -1215,7 +1215,7 @@ def artikel_bauen(sterne, reverse_daten, teuerste=(), set_daten=()):
         if ohne:
             namen = ", ".join(f'{s["name"]} ☆ aus {s["set"]}' for s in ohne)
             titel = "Ohne Angebot" if len(ohne) > 1 else f'Ohne Angebot: {ohne[0]["name"]} ☆'
-            text = (f"Für {namen} gibt es auf Cardmarket derzeit kein einziges deutsches "
+            text = (f"Für {namen} gibt es derzeit kein einziges deutsches "
                     f"Angebot. Das ist kein Datenfehler, sondern der Normalzustand bei "
                     f"Karten dieser Seltenheit: Es kommt vor, dass wochenlang kein "
                     f"Exemplar auf dem Markt ist.")
