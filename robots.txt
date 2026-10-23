@@ -29,3 +29,4 @@ Disallow:
 
 Sitemap: https://poketrack.de/sitemap.xml
 Sitemap: https://poketrack.de/karten/sitemap-sets.xml
+Sitemap: https://poketrack.de/karten/englisch/sitemap-sets.xml

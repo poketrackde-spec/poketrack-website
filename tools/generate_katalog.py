@@ -35,6 +35,8 @@ import urllib.request
 import urllib.parse
 
 DB = os.environ.get("KATALOG_DB") or r"C:\Users\danie\Documents\Pokemon App\assets\db.json"
+# Englischer Katalog (seit 23.10.2026): /cards?sprache=en&stufe=2, lokal die App-Kopie.
+DB_EN = os.environ.get("KATALOG_DB_EN") or r"C:\Users\danie\Documents\Pokemon App\assets\db_en.json"
 SETMETA_TS = (os.environ.get("KATALOG_SETMETA")
               or r"C:\Users\danie\Documents\Pokemon App\src\data\setMetadata.ts")
 # Ausgabewurzel (Website-Repo-Root); ueber KATALOG_OUT ueberschreibbar.
@@ -80,7 +82,12 @@ SET_ALIAS = {
 
 
 def _meta(set_meta, set_name):
-    return set_meta.get(SET_ALIAS.get(set_name, set_name)) or {}
+    m = set_meta.get(SET_ALIAS.get(set_name, set_name))
+    if not m and set_name.endswith(" 1. Edition"):
+        # Eigene 1.-Edition-Sets (App 1.4.3) stehen nicht in setMetadata.ts -
+        # wie in der App gelten Era und Logo des Originals.
+        m = set_meta.get(set_name[:-len(" 1. Edition")])
+    return m or {}
 
 
 def card_reverse_variants(card, set_reverse_types):
@@ -198,6 +205,51 @@ FLAG_DE = ('<svg class="kflag" viewBox="0 0 5 3" role="img" aria-label="Deutschl
            '<rect width="5" height="1" fill="#000000"/></svg>')
 
 
+FLAG_EN = ('<svg class="kflag" viewBox="0 0 60 36" role="img" aria-label="Englisch">'
+           '<rect width="60" height="36" fill="#012169"/>'
+           '<path d="M0,0 L60,36 M60,0 L0,36" stroke="#fff" stroke-width="7.2"/>'
+           '<path d="M0,0 L60,36 M60,0 L0,36" stroke="#C8102E" stroke-width="4.3"/>'
+           '<path d="M30,0 V36 M0,18 H60" stroke="#fff" stroke-width="12"/>'
+           '<path d="M30,0 V36 M0,18 H60" stroke="#C8102E" stroke-width="7.2"/></svg>')
+
+# ── Sprachprofile ───────────────────────────────────────────────────────────
+# Der Katalog wird zweimal gebaut: deutsch unter /karten/, englisch unter
+# /karten/englisch/ (seit 23.10.2026). Alles, was sich zwischen beiden
+# unterscheidet (Pfad, Preisquelle, Texte), steht hier; SP zeigt waehrend eines
+# Laufs auf das aktuelle Profil. Die Seiten bleiben deutschsprachig - die
+# Zielgruppe sind deutschsprachige Sammler, die auch englische Karten haben.
+SPRACHEN = {
+    "de": {
+        "code": "de", "pfad": "karten", "flag": FLAG_DE,
+        "wort_gross": "Deutsch", "sets_wort": "deutschen",
+        "quelle": "Cardmarket, deutsch, Near Mint",
+        "quelle_satz": "die günstigsten deutschen Angebote in Zustand Near Mint",
+        "ref_label": "Referenzpreis (Cardmarket, Normal)",
+        "notiz": "Preise sind Cardmarket-Niedrigpreise (Near Mint, deutsch) und dienen als Orientierung.",
+        "fakt_label": "Günstigstes Angebot", "fakt_zusatz": "(Near Mint, deutsch)",
+        "preis_wort": "Cardmarket-Preis",
+    },
+    "en": {
+        "code": "en", "pfad": "karten/englisch", "flag": FLAG_EN,
+        "wort_gross": "Englisch", "sets_wort": "englischen",
+        "quelle": "TCGplayer-Marktpreis, in Euro umgerechnet",
+        "quelle_satz": "TCGplayer-Marktpreise (USA), täglich zum EZB-Kurs in Euro umgerechnet",
+        "ref_label": "Marktpreis (TCGplayer, in €)",
+        "notiz": "Preise sind TCGplayer-Marktpreise für englische Karten, täglich zum EZB-Kurs in Euro umgerechnet, und dienen als Orientierung.",
+        "fakt_label": "Marktpreis", "fakt_zusatz": "(TCGplayer, in € umgerechnet)",
+        "preis_wort": "Marktpreis",
+    },
+}
+SP = SPRACHEN["de"]
+# Gleiches Set in der anderen Sprache: {(sprache, set_name): (url, name)}
+GEGENSTUECK = {}
+
+
+def kpfad():
+    """'/karten' bzw. '/karten/englisch' - Wurzel des laufenden Katalogs."""
+    return "/" + SP["pfad"]
+
+
 # Sets, deren Preise nicht abrufbar waren. Lokal ist das ein Hinweis, in der
 # naechtlichen Action ein Abbruchgrund: ein Katalog ohne Preise ist genau der
 # "minderwertige Inhalt", den AdSense beanstandet hat.
@@ -206,7 +258,11 @@ PREIS_FEHLER = []
 # Letzter veroeffentlichter Stand: {"/karten/<set>/<karte>/": [preis|null, "YYYY-MM-DD"]}
 # Wird mitveroeffentlicht, damit der naechste Lauf weiss, welche Preise sich wirklich
 # geaendert haben - siehe stand_laden().
-STAND_DATEI = "karten/stand.json"
+STAND_DATEI = "karten/stand.json"   # deutsch; je Sprache siehe stand_datei()
+
+
+def stand_datei():
+    return f"{SP['pfad']}/stand.json"
 
 
 def stand_laden():
@@ -222,7 +278,7 @@ def stand_laden():
     # urllib ("Python-urllib/3.x") mit 403. Ohne den Header schlaegt das Laden
     # jede Nacht fehl, der Vergleich findet nie einen Vorstand - und die Sitemap
     # meldet Google wieder jeden Tag 19.000 Aenderungen.
-    anfrage = urllib.request.Request(f"{BASE}/{STAND_DATEI}",
+    anfrage = urllib.request.Request(f"{BASE}/{stand_datei()}",
                                      headers={"User-Agent": "poketrack-katalog"})
     try:
         with urllib.request.urlopen(anfrage, timeout=30) as r:
@@ -232,11 +288,11 @@ def stand_laden():
                 return daten
     except Exception as e:
         print(f"  Vorstand: Live-Abruf fehlgeschlagen ({type(e).__name__}: {e})")
-    pfad = os.path.join(OUT, STAND_DATEI)          # Notnagel: letzter lokaler Lauf
+    pfad = os.path.join(OUT, stand_datei())        # Notnagel: letzter lokaler Lauf
     try:
         with open(pfad, encoding="utf-8") as f:
             daten = json.load(f)
-        print(f"  Vorstand: {len(daten)} URLs aus {STAND_DATEI} (lokal)")
+        print(f"  Vorstand: {len(daten)} URLs aus {stand_datei()} (lokal)")
         return daten
     except Exception:
         print("  Vorstand: keiner gefunden - alle lastmod bekommen das heutige Datum")
@@ -262,7 +318,7 @@ def fetch_set_prices(set_name):
     gebackenen Preis, statt dass der Lauf abbricht. Ein Ausfall wird aber in
     PREIS_FEHLER vermerkt - unbeaufsichtigt darf daraus kein Deploy werden.
     """
-    q = urllib.parse.urlencode({"set_name": set_name})
+    q = urllib.parse.urlencode({"set_name": set_name, "sprache": SP["code"]})
     for _ in range(3):
         try:
             with urllib.request.urlopen(f"{BACKEND}/set-prices?{q}", timeout=90) as r:
@@ -429,12 +485,12 @@ def head(title, desc, canonical, og_image=None, noindex=False):
 <meta property="og:title" content="{e(title)}" />
 <meta property="og:description" content="{e(desc)}" />
 <meta property="og:locale" content="de_DE" />{og}
-<link rel="stylesheet" href="/karten/katalog.css?v=5" />{ad_head()}
+<link rel="stylesheet" href="/karten/katalog.css?v=6" />{ad_head()}
 <link rel="icon" href="/favicon.ico" sizes="any" /><link rel="icon" type="image/png" href="/favicon.png" sizes="192x192" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 </head>
 <body>
 <nav class="kn"><a href="/" class="kn-logo">Poké<span>Track</span></a>
-<div class="kn-links"><a href="/karten/">Katalog</a><a href="/magazin/">Magazin</a><a href="{APPSTORE}" class="kn-cta">App laden</a></div></nav>
+<div class="kn-links"><a href="/karten/">Deutsch</a><a href="/karten/englisch/">Englisch</a><a href="/magazin/">Magazin</a><a href="{APPSTORE}" class="kn-cta">App laden</a></div></nav>
 <div class="kpage">{ad_rail(ADSENSE_SLOT_LEFT, "left")}
 """
 
@@ -442,7 +498,7 @@ def head(title, desc, canonical, og_image=None, noindex=False):
 FOOT = f"""{ad_rail(ADSENSE_SLOT_RIGHT, "right")}</div>
 <footer class="kf">
 <p>PokéTrack ist keine offizielle Pokémon-App und steht in keiner Verbindung zu Nintendo, The Pokémon Company International Inc., Creatures Inc. oder GAME FREAK inc. Alle Rechte an „Pokémon" gehören © 1995–2026 The Pokémon Company International Inc. / Nintendo / Creatures Inc. / GAME FREAK inc.</p>
-<p><a href="/karten/">Alle Sets</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/impressum.html">Impressum</a></p>
+<p><a href="/karten/">Deutsche Sets</a> · <a href="/karten/englisch/">Englische Sets</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/impressum.html">Impressum</a></p>
 </footer></body></html>"""
 
 
@@ -459,7 +515,7 @@ def breadcrumb(items):
 
 def card_url(set_name, c):
     # _url wird in main() eindeutig vergeben (Kollisions-Suffix bei ???-Nummern)
-    return c.get("_url") or f"/karten/{slug(set_name)}/{num_slug(c['nummer'])}-{slug(c['name'])}/"
+    return c.get("_url") or f"{kpfad()}/{slug(set_name)}/{num_slug(c['nummer'])}-{slug(c['name'])}/"
 
 
 # ── Seiten ───────────────────────────────────────────────────────────────────
@@ -532,7 +588,7 @@ def render_card(set_name, c, prev_c=None, next_c=None, set_reverse_types=None,
     title = f"{name} {nummer_disp} – {set_name} | Wert & Preis | PokéTrack"
     if normal is not None:
         desc = (f"{name} ({nummer_disp}) aus {set_name} kostet aktuell {euro(normal)} "
-                f"(Cardmarket, deutsch, Near Mint). Preisverlauf, Reverse-Varianten "
+                f"({SP['quelle']}). Preisverlauf, Reverse-Varianten "
                 f"und Seltenheit im Ueberblick.")
     else:
         desc = (f"{name} ({nummer_disp}) aus {set_name}: Seltenheit, Varianten und "
@@ -596,13 +652,13 @@ def render_card(set_name, c, prev_c=None, next_c=None, set_reverse_types=None,
     # bei einer Reverse-Karte den Normalpreis-Verlauf, was bei Karten wie
     # EX Smaragd 70/106 (0,19 EUR normal, 200 EUR reverse) grob irrefuehrend war.
     reihen = []
-    rumpf_normal = verlauf_rumpf(history, "Cardmarket, deutsch, Zustand Near Mint")
+    rumpf_normal = verlauf_rumpf(history, SP["quelle"])
     if rumpf_normal:
         reihen.append(("Normal", rumpf_normal))
     vhist = (pdata or {}).get("variants") or {}
     for vk in card_reverse_variants(c, set_reverse_types):
         vlabel = VARIANT_NAME.get(vk, "Reverse")
-        rumpf = verlauf_rumpf(vhist.get(vk) or [], f"Cardmarket, deutsch, {vlabel}")
+        rumpf = verlauf_rumpf(vhist.get(vk) or [], f"{SP['quelle']}, {vlabel}")
         if rumpf:
             reihen.append((vlabel, rumpf))
     # Das CSS deckt kv-p0 bis kv-p4 ab. Aktuell hat kein Set mehr als drei
@@ -648,7 +704,7 @@ def render_card(set_name, c, prev_c=None, next_c=None, set_reverse_types=None,
     if set_info and set_info.get("era"):
         fakten.append(("Ära", set_info["era"]))
     if normal is not None:
-        fakten.append(("Günstigstes Angebot", f"{euro(normal)} (Near Mint, deutsch)"))
+        fakten.append((SP["fakt_label"], f"{euro(normal)} {SP['fakt_zusatz']}"))
     for label, preis, angebote, kondition in variant_fakten:
         wert = euro(preis)
         zusatz = []
@@ -675,7 +731,7 @@ def render_card(set_name, c, prev_c=None, next_c=None, set_reverse_types=None,
 (function(){{
   var fb={json.dumps(fb_ids)};
   var setFb=function(t){{fb.forEach(function(id){{var x=document.getElementById(id);if(x)x.textContent=t;}});}};
-  var q=new URLSearchParams({{name:{json.dumps(name)},number:{json.dumps(nummer)},set_name:{json.dumps(set_name)}}});
+  var q=new URLSearchParams({{name:{json.dumps(name)},number:{json.dumps(nummer)},set_name:{json.dumps(set_name)},sprache:{json.dumps(SP["code"])}}});
   fetch({json.dumps(BACKEND)}+"/price?"+q).then(function(r){{return r.json();}}).then(function(d){{
     var el=document.getElementById("kprice");
     if(d&&typeof d.avg==="number"){{
@@ -703,19 +759,19 @@ def render_card(set_name, c, prev_c=None, next_c=None, set_reverse_types=None,
 
     return head(title, desc, canonical, img, noindex=leer) + f"""
 <main class="kwrap">
-{breadcrumb([("Katalog", "/karten/"), (set_name, f"/karten/{slug(set_name)}/"), (f"{name} {nummer_disp}", None)])}
+{breadcrumb([("Katalog " + SP["wort_gross"], kpfad() + "/"), (set_name, f"{kpfad()}/{slug(set_name)}/"), (f"{name} {nummer_disp}", None)])}
 {card_nav}
 <div class="kcard">
   <div class="kcard-img">{img_tag}</div>
   <div class="kcard-info">
     <h1>{e(name)} {e(nummer_disp)}</h1>
     <div class="ktags">{rarity_badge}{type_tag}</div>
-    <p class="ksub">{e(set_name)} · Nr. {e(nummer_disp)}</p>
+    <p class="ksub">{SP["flag"]} {e(set_name)} · Nr. {e(nummer_disp)}</p>
     <div class="kprice-box">
-      <div class="kp-row"><span>Referenzpreis (Cardmarket, Normal)</span>{preis_zelle}</div>
+      <div class="kp-row"><span>{SP["ref_label"]}</span>{preis_zelle}</div>
       {variant_rows}
     </div>
-    <p class="knote">Preise sind Cardmarket-Niedrigpreise (Near Mint, deutsch) und dienen als Orientierung.</p>
+    <p class="knote">{SP["notiz"]}</p>
     <a class="kappbtn" href="{APPSTORE}">In der PokéTrack-App öffnen →</a>
   </div>
 </div>
@@ -728,10 +784,11 @@ def render_card(set_name, c, prev_c=None, next_c=None, set_reverse_types=None,
 
 
 def render_set(set_name, cards, total=None, priced=0, reverse_total=None, reverse_priced=0):
-    canonical = BASE + f"/karten/{slug(set_name)}/"
-    title = f"{set_name} – alle Karten & Preise | PokéTrack"
-    desc = (f"Alle {len(cards)} Karten aus dem Set {set_name} mit aktuellen Cardmarket-Preisen "
-            f"(deutsch, Near Mint). Sammlung tracken mit PokéTrack.")
+    canonical = BASE + f"{kpfad()}/{slug(set_name)}/"
+    zusatz_titel = " (englisch)" if SP["code"] == "en" else ""
+    title = f"{set_name}{zusatz_titel} – alle Karten & Preise | PokéTrack"
+    desc = (f"Alle {len(cards)} Karten aus dem Set {set_name} mit aktuellen Preisen "
+            f"({SP['quelle']}). Sammlung tracken mit PokéTrack.")
     total = total or 0
     reverse_total = reverse_total or 0
     total_box = ""
@@ -747,14 +804,14 @@ def render_set(set_name, cards, total=None, priced=0, reverse_total=None, revers
             f'</div>'
             f'<span class="ktotal-note">Normal: {priced} von {len(cards)} Karten · '
             f'Reverse Holo: {reverse_priced} Karten · '
-            f'Cardmarket, deutsch, Near Mint.</span></div>')
+            f'{SP["quelle"]}.</span></div>')
     elif total > 0:
         # Set ohne Reverse (z.B. Vintage-Basissets) -> nur ein Gesamtwert
         total_box = (
             f'<div class="ktotal">'
             f'<span class="ktotal-label">Gesamtwert des Sets</span>'
             f'<span class="ktotal-value">{euro(total)}</span>'
-            f'<span class="ktotal-note">Summe der günstigsten Near-Mint-Preise (Cardmarket, deutsch) '
+            f'<span class="ktotal-note">Summe der Preise ({SP["quelle"]}) '
             f'von {priced} der {len(cards)} Karten</span></div>')
     tiles = ""
     for c in cards:
@@ -782,17 +839,22 @@ def render_set(set_name, cards, total=None, priced=0, reverse_total=None, revers
                       f"die separat bepreist wird.")
     if priced:
         saetze.append(f"Für {priced} der {len(cards)} Karten liegt ein aktueller "
-                      f"Cardmarket-Preis vor; die Summe ergibt {euro(total)}.")
+                      f"{SP['preis_wort']} vor; die Summe ergibt {euro(total)}.")
     intro = ('<section class="kintro"><h2>Über dieses Set</h2><p>'
-             + " ".join(saetze) + "</p><p>Alle Preise sind die günstigsten deutschen "
-             "Angebote in Zustand Near Mint und werden täglich aktualisiert. Ein Klick "
-             "auf eine Karte zeigt ihren Preisverlauf.</p></section>")
+             + " ".join(saetze) + f"</p><p>Alle Preise sind {SP['quelle_satz']} und werden "
+             "täglich aktualisiert. Ein Klick auf eine Karte zeigt ihren Preisverlauf.</p></section>")
+    # Dasselbe Set in der anderen Sprache - fuer Sammler, die beides haben.
+    gegen = GEGENSTUECK.get((SP["code"], set_name))
+    if gegen:
+        andere = "auf Englisch" if SP["code"] == "de" else "auf Deutsch"
+        intro += (f'<p class="kanders">Dieses Set gibt es auch {andere}: '
+                  f'<a href="{e(gegen[0])}">{e(gegen[1])} →</a></p>')
 
     return head(title, desc, canonical) + f"""
 <main class="kwrap">
-{breadcrumb([("Katalog", "/karten/"), (set_name, None)])}
-<h1 class="kh1">{e(set_name)}</h1>
-<p class="ksub">{len(cards)} Karten · Preise von Cardmarket (deutsch, Near Mint)</p>
+{breadcrumb([("Katalog " + SP["wort_gross"], kpfad() + "/"), (set_name, None)])}
+<h1 class="kh1">{e(set_name)} {SP["flag"]}</h1>
+<p class="ksub">{len(cards)} Karten · Preise: {SP["quelle"]}</p>
 {total_box}
 {intro}
 <div class="kgrid">{tiles}</div>
@@ -801,10 +863,17 @@ def render_set(set_name, cards, total=None, priced=0, reverse_total=None, revers
 
 
 def render_index(sets_items, set_meta, era_order):
-    canonical = BASE + "/karten/"
-    title = "Pokémon-Karten-Katalog (deutsch) – alle Sets & Preise | PokéTrack"
-    desc = ("Durchsuche alle deutschen Pokémon-Sets mit aktuellen Cardmarket-Preisen. "
-            "Über 18.000 Karten, 135 Sets. Sammlung & Werte tracken mit der PokéTrack-App.")
+    canonical = BASE + kpfad() + "/"
+    n_sets = len(sets_items)
+    n_k = f"{sum(len(c) for _, c in sets_items):,}".replace(",", ".")
+    if SP["code"] == "en":
+        title = "Englische Pokémon-Karten – alle Sets & Preise | PokéTrack"
+        desc = (f"Alle {n_sets} englischen Pokémon-Sets mit {n_k} Karten und aktuellen "
+                "TCGplayer-Marktpreisen in Euro. Sammlung & Werte tracken mit der PokéTrack-App.")
+    else:
+        title = "Pokémon-Karten-Katalog (deutsch) – alle Sets & Preise | PokéTrack"
+        desc = (f"Durchsuche alle {n_sets} deutschen Pokémon-Sets mit {n_k} Karten und aktuellen "
+                "Cardmarket-Preisen. Sammlung & Werte tracken mit der PokéTrack-App.")
 
     # Nach Aera gruppieren, db.json-Reihenfolge der Sets beibehalten
     by_era = {}
@@ -824,14 +893,28 @@ def render_index(sets_items, set_meta, era_order):
             else:
                 inner = f'<span class="kset-fallback">{e(set_name)}</span>'
                 meta_line = f"{len(cards)} Karten"
-            tiles += (f'<a class="kset" href="/karten/{slug(set_name)}/">'
+            tiles += (f'<a class="kset" href="{kpfad()}/{slug(set_name)}/">'
                       f'<div class="kset-logo">{inner}</div>'
                       f'<span class="kset-meta">{meta_line}</span></a>')
-        sections += (f'<section class="kera"><h2 class="kera-h">{FLAG_DE} {e(era)}</h2>'
+        sections += (f'<section class="kera"><h2 class="kera-h">{SP["flag"]} {e(era)}</h2>'
                      f'<div class="ksetgrid">{tiles}</div></section>')
 
     n_karten = f"{sum(len(c) for _, c in sets_items):,}".replace(",", ".")
-    intro = f"""<section class="kintro">
+    if SP["code"] == "en":
+        intro = f"""<section class="kintro">
+<h2>Was dieser Katalog enthält</h2>
+<p>Hier sind {n_karten} Karten aus {len(sets_items)} englischen Pokémon-Sets erfasst —
+von Base Set aus dem Jahr 1999 bis zu den aktuellen Erweiterungen, die Wizards-Sets
+auch als 1st Edition. Zu jeder Karte findest du Kartennummer, Seltenheit, Kartentyp
+und den aktuellen Marktpreis.</p>
+<p>Die Preise sind TCGplayer-Marktpreise aus den USA, wo englische Karten am meisten
+gehandelt werden. Wir rechnen sie täglich zum Referenzkurs der Europäischen Zentralbank
+in Euro um und zeichnen für jede Karte den Preisverlauf auf.</p>
+<p>Deutsche Karten findest du im <a href="/karten/">deutschen Katalog</a> mit
+Cardmarket-Preisen. In der PokéTrack-App liegen beide Sprachen in einer Sammlung.</p>
+</section>"""
+    else:
+        intro = f"""<section class="kintro">
 <h2>Was dieser Katalog enthält</h2>
 <p>Hier sind {n_karten} Karten aus {len(sets_items)} auf Deutsch erschienenen
 Pokémon-Sets erfasst — von der Basisserie aus dem Jahr 1999 bis zu den aktuellen
@@ -844,13 +927,15 @@ deutlich vom normalen Druck unterscheiden kann. Für jede Karte zeichnen wir
 außerdem den Preisverlauf auf, sodass sichtbar wird, ob ein Wert steigt oder
 fällt.</p>
 <p>Der Katalog ist die offene Fassung der PokéTrack-App, mit der du deine eigene
-Sammlung verwalten und ihren Wert verfolgen kannst.</p>
+Sammlung verwalten und ihren Wert verfolgen kannst. Englische Karten findest du im
+<a href="/karten/englisch/">englischen Katalog</a>.</p>
 </section>"""
 
     return head(title, desc, canonical) + f"""
 <main class="kwrap">
-<h1 class="kh1">Pokémon-Karten-Katalog {FLAG_DE}</h1>
-<p class="ksub">Alle {len(sets_items)} deutschen Sets mit aktuellen Cardmarket-Preisen — nach Ära sortiert wie in der App.</p>
+<h1 class="kh1">{"Englische Pokémon-Karten" if SP["code"] == "en" else "Pokémon-Karten-Katalog"} {SP["flag"]}</h1>
+<p class="ksub">Alle {len(sets_items)} {SP["sets_wort"]} Sets mit aktuellen Preisen ({SP["quelle"]}) — nach Ära sortiert wie in der App.</p>
+<p class="ksprachen"><a href="/karten/"{' class="aktiv"' if SP["code"] == "de" else ""}>{FLAG_DE} Deutsch</a><a href="/karten/englisch/"{' class="aktiv"' if SP["code"] == "en" else ""}>{FLAG_EN} Englisch</a></p>
 {intro}
 {sections}
 </main>
@@ -866,6 +951,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .kn-logo{font-weight:800;font-size:20px;color:var(--text)}.kn-logo span{color:var(--accent)}
 .kn-links{display:flex;gap:16px;align-items:center}.kn-links a{color:var(--muted);font-size:14px;font-weight:600}
 .kn-cta{background:var(--accent);color:var(--dark)!important;padding:6px 14px;border-radius:100px}
+.kn-cta{white-space:nowrap}@media(max-width:480px){.kn{padding:0 14px}.kn-links{gap:12px}.kn-links a{font-size:13px}.kn-links a[href="/magazin/"]{display:none}}
 .kwrap{max-width:1000px;margin:0 auto;padding:24px 20px 60px}
 /* Werbung: Side-Rails links/rechts, zentrierter Inhalt in der Mitte */
 .kpage{display:flex;justify-content:center;align-items:flex-start;gap:28px;width:100%}
@@ -976,6 +1062,8 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .kp-hint{color:var(--muted);font-size:12px;font-weight:400;margin-left:4px}
 .kintro p{color:var(--muted);font-size:14px}.kintro p+p{margin-top:10px}
 .kintro h2{font-size:18px;margin-bottom:10px;color:var(--text)}
+.ksprachen{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}.ksprachen a{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:600;font-size:14px;text-decoration:none}.ksprachen a.aktiv{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.kanders{margin-top:12px;font-size:14px;color:var(--muted)}.kanders a{font-weight:700}
 @media(max-width:560px){.kcard-img{flex-basis:100%}.kfakten dl{grid-template-columns:1fr;gap:2px 0}.kfakten dd{margin-bottom:8px}.kv-zahlen{grid-template-columns:repeat(2,1fr)}}
 """
 
@@ -1245,9 +1333,57 @@ def write(path, content):
         f.write(content)
 
 
-def main(only_set=None):
+def _meta_en(db_en):
+    """Era/Logo der englischen Sets - stehen in db_en.json unter set_meta. Die
+    Aera ist dort (wie in der App) der deutsche Name, damit ERA_ORDER passt."""
+    return {name: {"era": m.get("aera") or "Weitere Sets", "logo": m.get("logo"),
+                   "reverseTypes": None}
+            for name, m in (db_en.get("set_meta") or {}).items()}
+
+
+def main(only_set=None, sprachen=("de", "en")):
+    global SP, GEGENSTUECK, PREIS_FEHLER
     with open(DB, encoding="utf-8-sig") as f:
         db = json.load(f)
+    era_order, set_meta = load_set_meta()
+    db_en = None
+    if "en" in sprachen:
+        try:
+            with open(DB_EN, encoding="utf-8-sig") as f:
+                db_en = json.load(f)
+        except FileNotFoundError:
+            print(f"  ! {DB_EN} fehlt - englischer Katalog wird nicht gebaut")
+
+    # Querverweise: Die englischen Sets kennen ihren deutschen Namen (de_name).
+    GEGENSTUECK = {}
+    if db_en:
+        for en_name, m in (db_en.get("set_meta") or {}).items():
+            de_name = m.get("de_name")
+            if de_name and de_name in db["sets"] and en_name in db_en["sets"]:
+                GEGENSTUECK[("de", de_name)] = (f"/karten/englisch/{slug(en_name)}/", en_name)
+                GEGENSTUECK[("en", en_name)] = (f"/karten/{slug(de_name)}/", de_name)
+
+    write("karten/katalog.css", CSS)
+    fehler = []
+    for code in sprachen:
+        if code == "en" and not db_en:
+            continue
+        SP = SPRACHEN[code]
+        PREIS_FEHLER = []
+        print(f"\n=== Katalog {SP['wort_gross']} -> /{SP['pfad']}/ ===")
+        if code == "de":
+            bauen(db, set_meta, era_order, only_set)
+        else:
+            bauen(db_en, _meta_en(db_en), era_order, only_set)
+        fehler.append((code, list(PREIS_FEHLER)))
+    SP = SPRACHEN["de"]
+    # Der Abbruch unten in bauen() greift je Sprache; hier nur die Bilanz.
+    for code, liste in fehler:
+        if liste:
+            print(f"  ! {code}: Preise fehlten fuer {len(liste)} Sets")
+
+
+def bauen(db, set_meta, era_order, only_set=None):
 
     # Eindeutige URL je Karte VORHER vergeben (ueber ALLE Sets). Bei gleichem
     # Slug im selben Set (v.a. ???-Nummern) -> Zaehler-Suffix -2/-3. Stabil, damit
@@ -1258,7 +1394,7 @@ def main(only_set=None):
             base = f"{num_slug(c['nummer'])}-{slug(c['name'])}"
             used[base] = used.get(base, 0) + 1
             suffix = "" if used[base] == 1 else f"-{used[base]}"
-            c["_url"] = f"/karten/{slug(sn)}/{base}{suffix}/"
+            c["_url"] = f"{kpfad()}/{slug(sn)}/{base}{suffix}/"
 
     # Namens-Index ueber ALLE Sets (fuer "Mehr Karten von X"), unabhaengig von only_set
     global NAME_INDEX
@@ -1271,11 +1407,9 @@ def main(only_set=None):
     if only_set:
         sets = [(n, c) for n, c in sets if n == only_set]
 
-    era_order, set_meta = load_set_meta()
-    write("karten/katalog.css", CSS)
-    write("karten/index.html", render_index(list(db["sets"].items()), set_meta, era_order))
+    write(f"{SP['pfad']}/index.html", render_index(list(db["sets"].items()), set_meta, era_order))
 
-    urls = [f"{BASE}/karten/"]
+    urls = [f"{BASE}{kpfad()}/"]
     preis_je_url = {}
     stand_alt = stand_laden()
     n_cards = 0
@@ -1324,14 +1458,14 @@ def main(only_set=None):
             if teuerste_im_set is None or p > teuerste_im_set["preis"]:
                 teuerste_im_set = eintrag
         artikel_sets.append({
-            "set": set_name, "url": f"/karten/{slug(set_name)}/",
+            "set": set_name, "url": f"{kpfad()}/{slug(set_name)}/",
             "anzahl": len(cards), "bepreist": priced, "summe": total,
             "era": meta.get("era") or "", "teuerste": teuerste_im_set})
 
         # Rohdaten fuer die Magazin-Artikel. Nur die EX-Aera - genau darueber
         # schreiben beide Artikel. "Star" trifft sonst auch die Prism-Star-Karten
         # der modernen Sets, die nichts mit Gold Stars zu tun haben.
-        if set_name.startswith("EX "):
+        if set_name.startswith("EX ") and SP["code"] == "de":
             for c, p in zip(cards, prices):
                 anzeige = "EX Holon Phantoms" if set_name == "EX Holo Phantoms" else set_name
                 u = BASE + card_url(set_name, c)
@@ -1347,9 +1481,9 @@ def main(only_set=None):
                         "reverse": rp["preis"], "normal": p,
                         "angebote": rp.get("angebote")})
 
-        write(f"karten/{slug(set_name)}/index.html",
+        write(f"{SP['pfad']}/{slug(set_name)}/index.html",
               render_set(set_name, cards, total, priced, reverse_total, reverse_priced))
-        urls.append(f"{BASE}/karten/{slug(set_name)}/")
+        urls.append(f"{BASE}{kpfad()}/{slug(set_name)}/")
         for i, c in enumerate(cards):
             prev_c = cards[i - 1] if i > 0 else None
             next_c = cards[i + 1] if i < len(cards) - 1 else None
@@ -1365,7 +1499,9 @@ def main(only_set=None):
                 preis_je_url[c["_url"]] = prices[i]   # Schluessel = Pfad, wie in stand.json
             n_cards += 1
 
-    artikel_bauen(artikel_sterne, artikel_reverse, artikel_teuerste, artikel_sets)
+    # Die Magazin-Artikel werten den deutschen Markt aus.
+    if SP["code"] == "de":
+        artikel_bauen(artikel_sterne, artikel_reverse, artikel_teuerste, artikel_sets)
 
     # Sitemap – <lastmod> nur bumpen, wenn sich der PREIS geaendert hat.
     #
@@ -1378,7 +1514,7 @@ def main(only_set=None):
     # Seiten ohne Preis (Katalog- und Set-Seiten) behalten die alte Regel.
     today = datetime.date.today().isoformat()
     old_lastmod = {}
-    sm_path = os.path.join(OUT, "karten/sitemap.xml")
+    sm_path = os.path.join(OUT, f"{SP['pfad']}/sitemap.xml")
     if os.path.exists(sm_path):
         for m in re.finditer(r"<loc>(.*?)</loc><lastmod>(.*?)</lastmod>",
                              open(sm_path, encoding="utf-8").read()):
@@ -1427,14 +1563,14 @@ def main(only_set=None):
         sm.append(f"<url><loc>{u}</loc><lastmod>{lastmod}</lastmod></url>")
     sm.append("</urlset>")
     sm_sets.append("</urlset>")
-    write("karten/sitemap.xml", "\n".join(sm))
-    write("karten/sitemap-sets.xml", "\n".join(sm_sets))
-    write(STAND_DATEI, json.dumps(stand_neu, separators=(",", ":")))
+    write(f"{SP['pfad']}/sitemap.xml", "\n".join(sm))
+    write(f"{SP['pfad']}/sitemap-sets.xml", "\n".join(sm_sets))
+    write(stand_datei(), json.dumps(stand_neu, separators=(",", ":")))
     print(f"  Sitemap: {n_neu}/{len(urls)} URLs mit neuem lastmod ({today}), "
           f"Rest behaelt altes Datum")
     print(f"  Set-Sitemap: {len(sm_sets) - 3} Katalog-/Set-Seiten "
-          f"-> karten/sitemap-sets.xml")
-    print(f"  Stand fortgeschrieben: {len(stand_neu)} Kartenpreise -> {STAND_DATEI}")
+          f"-> {SP['pfad']}/sitemap-sets.xml")
+    print(f"  Stand fortgeschrieben: {len(stand_neu)} Kartenpreise -> {stand_datei()}")
 
     print(f"Generiert: {len(sets)} Sets, {n_cards} Karten, {len(urls)} URLs -> {OUT}")
     print(f"  Ohne jede Preisinfo (noindex, nicht in der Sitemap): {n_noindex} Karten")

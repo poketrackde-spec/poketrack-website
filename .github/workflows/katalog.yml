@@ -57,7 +57,7 @@ jobs:
           curl --fail --silent --show-error --location \
                --retry 5 --retry-delay 15 --retry-all-errors \
                --max-time 300 \
-               -o db.json "$BACKEND/cards"
+               -o db.json "$BACKEND/cards?stufe=2"
           # Groesse pruefen: german_cards.json ist ~6 MB. Kommt deutlich weniger an,
           # ist etwas faul (Fehlerseite, halbe Antwort) - dann lieber hier abbrechen
           # als einen lueckenhaften Katalog zu bauen.
@@ -69,10 +69,23 @@ jobs:
           fi
           python -c "import json;d=json.load(open('db.json',encoding='utf-8-sig'));print(f'  {len(d[\"sets\"])} Sets gelesen')"
 
+      # Englischer Katalog (seit 23.10.2026) unter /karten/englisch/. stufe=2
+      # wie oben: mit den 1st-Edition-Sets, so wie die aktuelle App sie zeigt.
+      - name: Englische Kartendaten vom Backend holen
+        run: |
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 15 --retry-all-errors --max-time 300 -o db_en.json "$BACKEND/cards?sprache=en&stufe=2"
+          groesse=$(stat -c%s db_en.json)
+          echo "db_en.json: $groesse Bytes"
+          if [ "$groesse" -lt 4000000 ]; then
+            echo "::error::db_en.json ist nur $groesse Bytes gross - Abbruch."
+            exit 1
+          fi
+
       - name: Katalog bauen
         env:
           KATALOG_OUT: ${{ github.workspace }}
           KATALOG_DB: ${{ github.workspace }}/db.json
+          KATALOG_DB_EN: ${{ github.workspace }}/db_en.json
           KATALOG_SETMETA: ${{ github.workspace }}/tools/setMetadata.ts
           PYTHONIOENCODING: utf-8
         run: python tools/generate_katalog.py
@@ -92,9 +105,16 @@ jobs:
             echo "::error::Nur $mit_preis Seiten mit Preis - Backend unvollstaendig? Abbruch."
             exit 1
           fi
+          # Der englische Katalog hat ~21.600 Seiten (in den Zahlen oben schon mit drin).
+          en=$(find karten/englisch -name index.html | wc -l)
+          echo "davon englisch: $en"
+          if [ "$en" -lt 20000 ]; then
+            echo "::error::Nur $en englische Seiten gebaut - Abbruch."
+            exit 1
+          fi
 
       - name: Bauzutaten aus der Veroeffentlichung nehmen
-        run: rm -rf db.json tools .github
+        run: rm -rf db.json db_en.json tools .github
 
       - uses: actions/upload-pages-artifact@v3
         with:

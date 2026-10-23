@@ -452,3 +452,5 @@ footer {
 .schluss p { color: var(--text-muted); margin: 8px 0 24px; }
 
 @media (max-width: 600px) { .nav-nur-breit { display: none; } }
+
+.katalog-knoepfe { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
