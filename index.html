@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PokéTrack – Pokémon Karten App | Deutsche & englische Karten tracken</title>
-  <meta name="description" content="PokéTrack ist die kostenlose App für deutsche und englische Pokémon-Sammelkarten. Verwalte deine Sammlung, verfolge tagesaktuelle Preise von Cardmarket und TCGplayer und behalte Gewinn & Verlust im Blick. 314 Sets, rund 39.900 Karten. Jetzt im App Store." />
-  <meta name="keywords" content="Pokémon Karten App, deutsche Pokémon Karten, englische Pokémon Karten, Pokémon Sammlung tracken, Pokémon Karten Preise, Cardmarket Preise, TCGplayer Preise, Pokémon TCG Deutsch, Pokémon Kartensammlung, Pokémon Preisverlauf" />
+  <title>PokéTrack – Pokémon Karten App | Deutsche, englische &amp; japanische Karten tracken</title>
+  <meta name="description" content="PokéTrack ist die kostenlose App für Pokémon-Sammelkarten auf Deutsch, Englisch und Japanisch. Karte scannen, Sammlung verwalten, tagesaktuelle Preise von Cardmarket und TCGplayer samt Reverse-Preisen und Preisverlauf. 732 Sets, rund 69.400 Karten. Für iPhone und iPad." />
+  <meta name="keywords" content="Pokémon Karten App, Pokémon Karten scannen, deutsche Pokémon Karten, englische Pokémon Karten, japanische Pokémon Karten, Pokémon Sammlung tracken, Pokémon Karten Preise, Reverse Holo Preise, Cardmarket Preise, TCGplayer Preise, Pokémon Preisverlauf" />
   <meta name="author" content="Daniel Bruck" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://poketrack.de/" />
@@ -13,19 +13,19 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://poketrack.de/" />
-  <meta property="og:title" content="PokéTrack – Pokémon Karten App für deutsche &amp; englische Karten" />
-  <meta property="og:description" content="Kostenlose App für deutsche und englische Pokémon-Sammelkarten. Sammlung verwalten, Preise von Cardmarket und TCGplayer tracken, Preisverlauf anzeigen. 314 Sets, rund 39.900 Karten." />
-  <meta property="og:image" content="https://poketrack.de/logo.png" />
+  <meta property="og:title" content="PokéTrack – die Pokémon-Karten-App mit Scanner und Tagespreisen" />
+  <meta property="og:description" content="Karte scannen, Sammlung verwalten, Preise von Cardmarket und TCGplayer verfolgen – für deutsche, englische und japanische Karten. 732 Sets, rund 69.400 Karten." />
+  <meta property="og:image" content="https://poketrack.de/bilder/app/start.webp" />
   <meta property="og:locale" content="de_DE" />
   <meta property="og:site_name" content="PokéTrack" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="PokéTrack – Pokémon Karten App für deutsche &amp; englische Karten" />
-  <meta name="twitter:description" content="Kostenlose App für deutsche und englische Pokémon-Sammelkarten. Sammlung verwalten, Preise tracken, Preisverlauf anzeigen." />
-  <meta name="twitter:image" content="https://poketrack.de/logo.png" />
+  <meta name="twitter:title" content="PokéTrack – die Pokémon-Karten-App mit Scanner und Tagespreisen" />
+  <meta name="twitter:description" content="Karte scannen, Sammlung verwalten, Preise tracken – für deutsche, englische und japanische Karten." />
+  <meta name="twitter:image" content="https://poketrack.de/bilder/app/start.webp" />
 
-  <link rel="stylesheet" href="style.css?v=6" />
+  <link rel="stylesheet" href="style.css?v=7" />
 
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -33,11 +33,12 @@
     "@context": "https://schema.org",
     "@type": "MobileApplication",
     "name": "PokéTrack",
-    "description": "Kostenlose App zur Verwaltung deutscher und englischer Pokémon-Sammelkarten mit tagesaktuellen Preisen von Cardmarket und TCGplayer sowie historischem Preisverlauf.",
+    "description": "Kostenlose App für Pokémon-Sammelkarten auf Deutsch, Englisch und Japanisch: Karten-Scanner, Sammlungsverwaltung, tagesaktuelle Preise von Cardmarket und TCGplayer inklusive Reverse-Preisen und Preisverlauf.",
     "applicationCategory": "LifestyleApplication",
-    "operatingSystem": "iOS",
+    "operatingSystem": "iOS, iPadOS",
     "inLanguage": ["de", "en"],
     "installUrl": "https://apps.apple.com/de/app/id6790953375",
+    "screenshot": ["https://poketrack.de/bilder/app/start.webp", "https://poketrack.de/bilder/app/scanner.webp", "https://poketrack.de/bilder/app/karte.webp"],
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -59,8 +60,9 @@
   <div class="nav-inner">
     <div class="nav-logo">Poké<span>Track</span></div>
     <div class="nav-links">
-      <a href="/karten/" class="nav-katalog">Kartenkatalog</a>
+      <a href="#funktionen" class="nav-nur-breit">Funktionen</a>
       <a href="/magazin/">Magazin</a>
+      <a href="/karten/" class="nav-katalog">Kartenkatalog</a>
     </div>
   </div>
 </nav>
@@ -69,14 +71,15 @@
 <section class="hero">
   <img src="logo.png" alt="PokéTrack Logo" class="app-icon" />
   <h1>Deine Pokémon-Sammlung.<br><span>Immer im Blick.</span></h1>
-  <p>PokéTrack ist die App für deutsche <em>und englische</em> Pokémon-Sammelkarten. Tracke deine Sammlung, verfolge aktuelle Preise von Cardmarket und TCGplayer und behalte den Überblick über alle Sets.</p>
+  <p>Karte scannen, Sammlung pflegen, Wert verfolgen: PokéTrack kennt deutsche, englische <em>und</em> japanische Karten – mit tagesaktuellen Preisen von Cardmarket und TCGplayer, auch für Reverse Holos.</p>
 
   <div class="badge-row">
     <a href="https://apps.apple.com/de/app/id6790953375" class="appstore-badge" target="_blank" rel="noopener" aria-label="Im App Store laden">
       <img src="/appstore-badge.svg" alt="Im App Store laden" width="162" height="54" />
     </a>
-    <span class="badge-soon"><svg class="badge-flag" viewBox="0 0 5 3" role="img" aria-label="Deutschland"><rect width="5" height="3" fill="#FFCE00"/><rect width="5" height="2" fill="#DD0000"/><rect width="5" height="1" fill="#000"/></svg><svg class="badge-flag" viewBox="0 0 60 36" role="img" aria-label="Vereinigtes Königreich"><rect width="60" height="36" fill="#012169"/><path d="M0,0 L60,36 M60,0 L0,36" stroke="#fff" stroke-width="7.2"/><path d="M0,0 L60,36 M60,0 L0,36" stroke="#C8102E" stroke-width="4.3"/><path d="M30,0 V36 M0,18 H60" stroke="#fff" stroke-width="12"/><path d="M30,0 V36 M0,18 H60" stroke="#C8102E" stroke-width="7.2"/></svg>Deutsche &amp; englische Karten</span>
+    <span class="badge-soon"><svg class="badge-flag" viewBox="0 0 5 3" role="img" aria-label="Deutschland"><rect width="5" height="3" fill="#FFCE00"/><rect width="5" height="2" fill="#DD0000"/><rect width="5" height="1" fill="#000"/></svg><svg class="badge-flag" viewBox="0 0 60 36" role="img" aria-label="Vereinigtes Königreich"><rect width="60" height="36" fill="#012169"/><path d="M0,0 L60,36 M60,0 L0,36" stroke="#fff" stroke-width="7.2"/><path d="M0,0 L60,36 M60,0 L0,36" stroke="#C8102E" stroke-width="4.3"/><path d="M30,0 V36 M0,18 H60" stroke="#fff" stroke-width="12"/><path d="M30,0 V36 M0,18 H60" stroke="#C8102E" stroke-width="7.2"/></svg><svg class="badge-flag" viewBox="0 0 30 20" role="img" aria-label="Japan"><rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="6" fill="#BC002D"/></svg>Deutsch, Englisch &amp; Japanisch</span>
   </div>
+  <p class="hero-klein">Kostenlos für iPhone und iPad · ohne Anmeldung nutzbar</p>
 </section>
 
 <!-- KATALOG-CTA-BALKEN -->
@@ -85,7 +88,7 @@
     <span class="katalog-cta-icon">🗂️</span>
     <span class="katalog-cta-text">
       <strong>Karten-Katalog durchstöbern</strong>
-      <span>Alle 135 Sets &amp; rund 19.000 deutsche Karten mit tagesaktuellen Preisen — direkt im Browser, ohne App</span>
+      <span>146 deutsche Sets mit rund 19.900 Karten und tagesaktuellen Preisen — direkt im Browser, ohne App</span>
     </span>
     <span class="katalog-cta-btn">Zum Katalog →</span>
   </div>
@@ -95,59 +98,138 @@
 <div class="stats-bar" id="zahlen">
   <div class="stats-inner">
     <div class="stat">
-      <span class="stat-number">314</span>
+      <span class="stat-number">732</span>
       <div class="stat-label">Sets</div>
     </div>
     <div class="stat">
-      <span class="stat-number">39.900</span>
+      <span class="stat-number">69.400</span>
       <div class="stat-label">Karten</div>
     </div>
     <div class="stat">
-      <span class="stat-number">täglich</span>
-      <div class="stat-label">Preis-Updates</div>
+      <span class="stat-number">3</span>
+      <div class="stat-label">Sprachen: DE · EN · JP</div>
     </div>
     <div class="stat">
-      <span class="stat-number">kostenlos</span>
-      <div class="stat-label">Download</div>
+      <span class="stat-number">täglich</span>
+      <div class="stat-label">neue Preise</div>
     </div>
   </div>
+  <p class="stats-detail">146 deutsche Sets (19.900 Karten) · 186 englische (21.600) · 400 japanische (27.900) — von der Grundserie bis „30 Jahre“, die Wizards-Sets auch als 1. Edition.</p>
 </div>
 
+<!-- SCREENSHOTS -->
+<section class="features screens-abschnitt" id="app">
+  <p class="section-label">So sieht's aus</p>
+  <h2 class="section-title">Ein Blick in die App</h2>
+  <div class="screens" tabindex="0" aria-label="Screenshots der App, seitlich wischen">
+    <figure><img src="/bilder/app/start.webp" alt="Startseite mit Gesamtwert der Sammlung, Gewinn und den wertvollsten Karten" loading="lazy" width="540" height="1173"><figcaption>Gesamtwert und Gewinn auf einen Blick</figcaption></figure>
+    <figure><img src="/bilder/app/scanner.webp" alt="Scanner: Foto einer Glurak-Karte, darunter die erkannten Treffer" loading="lazy" width="540" height="1173"><figcaption>Foto machen, Karte gefunden</figcaption></figure>
+    <figure><img src="/bilder/app/karte.webp" alt="Kartenseite von Nachtara-ex mit Cardmarket-Preis und Preisverlauf" loading="lazy" width="540" height="1173"><figcaption>Preis und Verlauf für jede Karte</figcaption></figure>
+    <figure><img src="/bilder/app/sets.webp" alt="Sets-Tab mit Logos der Mega-Entwicklung-Sets und Umschalter Deutsch, Englisch, Japanisch" loading="lazy" width="540" height="1173"><figcaption>Alle Sets in drei Sprachen</figcaption></figure>
+    <figure><img src="/bilder/app/vintage.webp" alt="Neo-Sets mit eigenen 1.-Edition-Sets" loading="lazy" width="540" height="1173"><figcaption>Vintage – auch als 1. Edition</figcaption></figure>
+    <figure><img src="/bilder/app/set.webp" alt="Set-Seite mit Fortschritt und allen Karten des Sets" loading="lazy" width="540" height="1173"><figcaption>Jedes Set, Karte für Karte</figcaption></figure>
+    <figure><img src="/bilder/app/sammlung.webp" alt="Sammlung nach Sets geordnet, mit Gesamtwert" loading="lazy" width="540" height="1173"><figcaption>Deine Sammlung, nach Sets geordnet</figcaption></figure>
+    <figure><img src="/bilder/app/statistik.webp" alt="Statistik mit Wochenrückblick und Wertentwicklung" loading="lazy" width="540" height="1173"><figcaption>Wochenrückblick und Wertentwicklung</figcaption></figure>
+    <figure><img src="/bilder/app/wunsch.webp" alt="Wunschliste mit Gesamtwert der gewünschten Karten" loading="lazy" width="540" height="1173"><figcaption>Wunschliste mit Gesamtwert</figcaption></figure>
+  </div>
+  <p class="screens-hinweis">Seitlich wischen für mehr →</p>
+</section>
+
 <!-- FEATURES -->
-<section class="features" id="features">
+<section class="features" id="funktionen">
   <p class="section-label">Was PokéTrack kann</p>
-  <h2 class="section-title">Alles was du als Sammler brauchst</h2>
+  <h2 class="section-title">Alles, was du als Sammler brauchst</h2>
 
   <div class="features-grid">
     <div class="feature-card">
-      <span class="feature-icon">📦</span>
-      <h3>Sammlung verwalten</h3>
-      <p>Halte fest welche Karten du besitzt — mit Variante (Normal, Reverse, Pokéball- &amp; Masterball-Reverse), Zustand, Anzahl und Einkaufspreis. Deine Daten bleiben auf deinem Gerät.</p>
+      <span class="feature-icon">📷</span>
+      <h3>Karten-Scanner</h3>
+      <p>Kamera auf die Karte halten: PokéTrack liest Nummer und Set und schlägt die passende Karte vor – auch bei alten Sets und Karten mit gleicher Nummer. Ein Tipp, und sie liegt in deiner Sammlung.</p>
     </div>
     <div class="feature-card">
       <span class="feature-icon">💶</span>
       <h3>Tagesaktuelle Preise</h3>
-      <p>Jede Karte bekommt ihren Preis aus dem Markt, der sie auch handelt: deutsche von Cardmarket (günstigster Near-Mint-Preis), englische von TCGplayer. Beide täglich aktualisiert, dazu echte eBay.de-Angebote direkt zur Karte.</p>
+      <p>Deutsche Karten mit dem günstigsten deutschen Near-Mint-Preis von Cardmarket, englische mit TCGplayer. Dazu eigene Preise für Reverse Holos und Sonder-Reverse wie Pokéball und Masterball – und echte eBay.de-Angebote zur Karte.</p>
     </div>
     <div class="feature-card">
       <span class="feature-icon">📈</span>
       <h3>Preisverlauf</h3>
-      <p>Verfolge wie sich der Wert deiner Karten über Zeit entwickelt. Der historische Preisverlauf wird täglich aktualisiert.</p>
+      <p>Für jede Karte ein Diagramm über 7 Tage bis zum gesamten Verlauf. Finger auf das Diagramm halten, und du siehst den Preis an jedem einzelnen Tag.</p>
     </div>
     <div class="feature-card">
-      <span class="feature-icon">🗂️</span>
-      <h3>Deutsche &amp; englische Sets</h3>
-      <p>138 deutsche Sets von der Grundserie bis zum Jubiläumsset „30 Jahre“, dazu 176 englische von Base bis 30th Celebration — zusammen rund 39.900 Karten. Umgeschaltet wird direkt im Sets-Tab, beide Sprachen liegen in einer Sammlung.</p>
+      <span class="feature-icon">📦</span>
+      <h3>Sammlung verwalten</h3>
+      <p>Mit Variante, Zustand, Anzahl und Einkaufspreis. Filtern nach Seltenheit, Typ, Variante oder Set – der Gesamtwert zeigt dann z. B., was deine Feuer-Karten wert sind. Dazu Wunschliste und Doppelte.</p>
     </div>
     <div class="feature-card">
       <span class="feature-icon">📊</span>
-      <h3>Portfolio-Überblick</h3>
-      <p>Sieh auf einen Blick wie viel deine Sammlung wert ist, was du investiert hast und wie dein Gewinn/Verlust aussieht.</p>
+      <h3>Wert &amp; Wochenrückblick</h3>
+      <p>Gesamtwert, Einkauf und Gewinn auf einen Blick, die Wertentwicklung als Diagramm. Jeden Sonntag auf Wunsch der Wochenrückblick: Was hat deine Sammlung gemacht, welche Karte hat am meisten zugelegt?</p>
     </div>
     <div class="feature-card">
-      <span class="feature-icon">🔍</span>
-      <h3>Set-Fortschritt</h3>
-      <p>Verfolge wie vollständig deine Sets sind. Sieh sofort welche Karten noch fehlen um ein Set zu vervollständigen.</p>
+      <span class="feature-icon">🎯</span>
+      <h3>Sets komplettieren</h3>
+      <p>Fortschritt für jedes Set, normal oder als Master Set. Heft dir ein Ziel-Set an, und die Startseite zeigt, welche Karten noch fehlen und was sie kosten. Ist ein Set komplett, gibt's Konfetti.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🗂️</span>
+      <h3>Drei Kataloge</h3>
+      <p>146 deutsche, 186 englische und 400 japanische Sets, sortiert nach Ära, mit Set-Logos. Basisset, Dschungel, Fossil, Team Rocket und die Neo-Sets gibt es zusätzlich als 1. Edition mit eigenen Preisen.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">✨</span>
+      <h3>Holo-Ansicht <span class="neu">Neu</span></h3>
+      <p>Kartenbild antippen und das Handy neigen: Die Karte kippt mit, Licht und Regenbogen-Glanz wandern darüber wie bei einer echten Holo-Karte.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🍀</span>
+      <h3>Glücksrad <span class="neu">Neu</span></h3>
+      <p>Einmal am Tag gratis drehen und Extra-Scans, werbefreie Tage, einen Preisalarm oder sogar PokéTrack Pro gewinnen. Alle Gewinnchancen stehen offen in der App.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">☁️</span>
+      <h3>Konto &amp; Sync – freiwillig</h3>
+      <p>Die App funktioniert ohne Anmeldung, deine Daten bleiben dann auf dem Gerät. Mit einem kostenlosen Konto ist die Sammlung gesichert und auf iPhone und iPad gleich. Export als CSV oder JSON jederzeit.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📤</span>
+      <h3>Teilen &amp; Meilensteine</h3>
+      <p>Set-Fortschritt, Sammlungswert und Meilensteine – von der 5. bis zur 10.000. Karte – als Bild für WhatsApp, Instagram &amp; Co.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🌙</span>
+      <h3>Hell, dunkel, iPad</h3>
+      <p>Dark Mode oder wie dein iPhone eingestellt ist. Auf dem iPad mit Querformat und mehr Karten auf einen Blick.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRO -->
+<section class="features" style="padding-top:0" id="pro">
+  <p class="section-label">Kostenlos – mit Pro für mehr</p>
+  <h2 class="section-title">Was kostet PokéTrack?</h2>
+  <div class="pro-grid">
+    <div class="pro-karte">
+      <h3>Kostenlos</h3>
+      <p class="pro-preis">0 €</p>
+      <ul>
+        <li>Alle Kataloge, Preise und Preisverläufe</li>
+        <li>Sammlung, Wunschliste, Doppelte, Statistik</li>
+        <li>Scanner mit täglichem Kontingent</li>
+        <li>Setwert für jedes Set, Ziel-Set, Wochenrückblick</li>
+        <li>Konto, Sync und Export</li>
+      </ul>
+    </div>
+    <div class="pro-karte pro-karte-pro">
+      <h3>PokéTrack Pro</h3>
+      <p class="pro-preis">3,99 € <small>im Monat</small> · 24,99 € <small>im Jahr</small></p>
+      <ul>
+        <li>Keine Werbung</li>
+        <li>Scannen ohne Tageslimit</li>
+        <li>Preisalarm: Mitteilung, wenn eine Karte deinen Zielpreis erreicht</li>
+        <li>Was dir zum kompletten Set fehlt – jede Nacht neu berechnet</li>
+      </ul>
+      <p class="pro-fuss">Kostenlos testen: 7 Tage beim Jahresabo, 3 Tage beim Monatsabo. Jederzeit im App Store kündbar.</p>
     </div>
   </div>
 </section>
@@ -213,14 +295,23 @@
 <!-- KATALOG CTA -->
 <section class="features" style="padding-top:0" id="katalog">
   <p class="section-label">Ohne Download stöbern</p>
-  <h2 class="section-title">Der komplette Karten-Katalog</h2>
+  <h2 class="section-title">Der Karten-Katalog im Browser</h2>
   <div style="max-width:640px;margin:0 auto;text-align:center;color:var(--text-muted)">
-    <p style="margin-bottom:28px">Alle 135 deutschen Sets mit über 18.000 Karten und aktuellen Cardmarket-Preisen — direkt im Browser durchsuchen, inklusive Reverse-, Pokéball- und Masterball-Varianten.</p>
+    <p style="margin-bottom:28px">Alle 146 deutschen Sets mit rund 19.900 Karten und aktuellen Cardmarket-Preisen — inklusive Reverse-, Pokéball- und Masterball-Varianten, Preisverlauf und den 1.-Edition-Sets.</p>
     <a href="/karten/" class="store-badge" style="justify-content:center">
       <span class="store-icon">🗂️</span>
       <span><span class="store-name">Kartenkatalog öffnen</span></span>
     </a>
   </div>
+</section>
+
+<!-- SCHLUSS-CTA -->
+<section class="schluss">
+  <h2>Was ist deine Sammlung wert?</h2>
+  <p>Lad dir PokéTrack kostenlos und finde es heraus.</p>
+  <a href="https://apps.apple.com/de/app/id6790953375" class="appstore-badge" target="_blank" rel="noopener" aria-label="Im App Store laden">
+    <img src="/appstore-badge.svg" alt="Im App Store laden" width="162" height="54" loading="lazy" />
+  </a>
 </section>
 
 <!-- DISCLAIMER -->
@@ -233,6 +324,7 @@
   <div class="footer-inner">
     <div class="footer-logo">Poké<span>Track</span></div>
     <div class="footer-links">
+      <a href="/karten/">Kartenkatalog</a>
       <a href="/magazin/">Magazin</a>
       <a href="patchnotes.html">Patchnotes</a>
       <a href="agb.html">Nutzungsbedingungen</a>
