@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["3R63FHTP59.com.pokede.app"],
+        "components": [
+          { "/": "/app/karte/*", "comment": "Kartenseite der Web-App - oeffnet die Karte in der App" },
+          { "/": "/app/set/*", "comment": "Set-Seite der Web-App - oeffnet das Set in der App" }
+        ]
+      }
+    ]
+  }
+}
