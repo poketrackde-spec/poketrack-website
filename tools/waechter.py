@@ -350,6 +350,11 @@ def main(argv):
         print("NTFY_KANAL fehlt - nur Ausgabe.")
         trocken = True
     melden(b, stand, kanal, "github", trocken)
+    if kanal and not trocken and not stand.get("verbunden"):
+        ntfy(kanal, "🔗 GitHub-Wächter verbunden",
+             f"Prüft ab jetzt alle 30 Minuten Server, Preise, Website und Bilder.\n"
+             f"Erster Lauf: {len(b.ok)} Prüfungen ok, {len(b.probleme)} Probleme.", 3, ["link"])
+        stand["verbunden"] = jetzt().isoformat(timespec="seconds")
     stand["zuletzt"] = jetzt().isoformat(timespec="seconds")
     json.dump(stand, open(pfad, "w", encoding="utf-8"), ensure_ascii=False)
     print(f"{len(b.ok)} ok, {len(b.probleme)} Probleme")
