@@ -1,0 +1,59 @@
+# ============================================================
+# PokeTrack-Waechter (seit 27.10.2026): prueft alle 30 Minuten Server, Preise,
+# Website und Bilder (tools/waechter.py) und schickt Probleme sofort per ntfy
+# aufs Handy. Der ntfy-Kanal steht als Geheimnis NTFY_KANAL in den
+# Repo-Einstellungen (Settings -> Secrets and variables -> Actions), NIE im Code.
+#
+# Was schon gemeldet ist, merkt sich waechter_stand.json im Actions-Cache -
+# sonst kaeme dieselbe Meldung alle 30 Minuten.
+# ============================================================
+
+name: Waechter
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: waechter
+  cancel-in-progress: false
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/waechter.py
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Stand vom letzten Lauf holen
+        uses: actions/cache/restore@v4
+        with:
+          path: waechter_stand.json
+          key: waechter-${{ github.run_id }}
+          restore-keys: waechter-
+
+      - name: Pruefen und melden
+        env:
+          NTFY_KANAL: ${{ secrets.NTFY_KANAL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONIOENCODING: utf-8
+        run: python tools/waechter.py --stand waechter_stand.json
+
+      - name: Stand speichern
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: waechter_stand.json
+          key: waechter-${{ github.run_id }}
