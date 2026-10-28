@@ -25,7 +25,7 @@
   <meta name="twitter:description" content="Karte scannen, Sammlung verwalten, Preise tracken – für deutsche, englische und japanische Karten." />
   <meta name="twitter:image" content="https://poketrack.de/bilder/app/start.webp" />
 
-  <link rel="stylesheet" href="style.css?v=8" />
+  <link rel="stylesheet" href="style.css?v=9" />
 
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -53,27 +53,91 @@
   </script>
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type": "Question", "name": "Gibt es eine App mit Preisen für deutsche Pokémon-Karten?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Ja. PokéTrack zeigt für deutsche Karten den Preis des günstigsten deutschen Angebots in Near Mint, einmal täglich aktualisiert, mit Preisverlauf. Viele andere Apps zeigen nur US-Preise englischer Karten, die bei deutschen Karten oft weit daneben liegen. Der Katalog umfasst 146 deutsche Sets mit rund 19.900 Karten."}},
-      {"@type": "Question", "name": "Was kostet PokéTrack?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Die App ist kostenlos: alle Kataloge, Preise, Preisverläufe, Sammlung, Wunschliste und der Scanner mit täglichem Kontingent. PokéTrack Pro kostet 3,99 € im Monat oder 24,99 € im Jahr und bringt keine Werbung, Scannen ohne Tageslimit, Preisalarme und eine Übersicht, was zum kompletten Set fehlt. Das Jahresabo kann man 7 Tage, das Monatsabo 3 Tage kostenlos testen."}},
-      {"@type": "Question", "name": "Gibt es Preise für Reverse Holos?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Ja, getrennt vom Preis der normalen Karte – auch für Sonder-Reverse wie Pokéball- und Masterball-Muster. Im Preisdiagramm kann man zwischen Normal, Reverse und Sonder-Reverse umschalten."}},
-      {"@type": "Question", "name": "Welche Sprachen und Sets werden unterstützt?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Deutsch, Englisch und Japanisch: 146 deutsche, 186 englische und 400 japanische Sets, zusammen 732 Sets mit rund 69.400 Karten. Von der Grundserie bis zu den neuesten Sets, die Wizards-Sets (Basisset, Dschungel, Fossil, Team Rocket, Neo) auch als 1. Edition mit eigenen Preisen. Englische und japanische Karten haben den US-Marktpreis, umgerechnet in Euro."}},
-      {"@type": "Question", "name": "Wie funktioniert der Karten-Scanner?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Kamera auf die Karte halten: Die App liest Kartennummer und Set und schlägt die passende Karte vor, auch bei alten Sets und Karten mit gleicher Nummer. Mit einem Tipp liegt sie in der Sammlung, mit Variante, Zustand und Einkaufspreis."}},
-      {"@type": "Question", "name": "Brauche ich ein Konto?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Nein. PokéTrack funktioniert ohne Anmeldung, die Daten bleiben dann auf dem Gerät. Ein kostenloses Konto sichert die Sammlung und gleicht sie zwischen iPhone und iPad ab. Export als CSV oder JSON ist jederzeit möglich."}},
-      {"@type": "Question", "name": "Gibt es PokéTrack für Android?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Noch nicht – die App gibt es derzeit für iPhone und iPad. Den Karten-Katalog mit Preisen und Preisverlauf kann man aber auf jedem Gerät im Browser nutzen: https://poketrack.de/karten/"}},
-      {"@type": "Question", "name": "Ist PokéTrack eine offizielle Pokémon-App?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Nein. PokéTrack ist eine unabhängige App von Daniel Bruck aus Wien und steht in keiner Verbindung zu Nintendo, The Pokémon Company, Creatures oder GAME FREAK."}}
-    ]
-  }
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Gibt es eine App mit Preisen für deutsche Pokémon-Karten?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja. PokéTrack zeigt für deutsche Karten den Preis des günstigsten deutschen Angebots in Near Mint, einmal täglich aktualisiert, mit Preisverlauf. Viele andere Apps zeigen nur US-Preise englischer Karten, die bei deutschen Karten oft weit daneben liegen. Der Katalog umfasst 146 deutsche Sets mit rund 19.900 Karten."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Was kostet PokéTrack?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Die App ist kostenlos: alle Kataloge, Preise, Preisverläufe, Sammlung, Wunschliste und der Scanner mit täglichem Kontingent. PokéTrack Pro kostet 3,99 € im Monat oder 24,99 € im Jahr und bringt keine Werbung, Scannen ohne Tageslimit, Preisalarme und eine Übersicht, was zum kompletten Set fehlt. Das Jahresabo kann man 7 Tage, das Monatsabo 3 Tage kostenlos testen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Gibt es Preise für Reverse Holos?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, getrennt vom Preis der normalen Karte – auch für Sonder-Reverse wie Pokéball- und Masterball-Muster. Im Preisdiagramm kann man zwischen Normal, Reverse und Sonder-Reverse umschalten."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Welche Sprachen und Sets werden unterstützt?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Deutsch, Englisch und Japanisch: 146 deutsche, 186 englische und 400 japanische Sets, zusammen 732 Sets mit rund 69.400 Karten. Von der Grundserie bis zu den neuesten Sets, die Wizards-Sets (Basisset, Dschungel, Fossil, Team Rocket, Neo) auch als 1. Edition mit eigenen Preisen. Englische und japanische Karten haben den US-Marktpreis, umgerechnet in Euro."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kann ich auch Displays, Top-Trainer-Boxen und Tins erfassen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja. PokéTrack kennt rund 770 versiegelte Produkte: Displays, Top-Trainer-Boxen, Booster-Bundles, Tins und Mini-Tins, auf Deutsch und Englisch. Jedes hat einen Tagespreis und einen Preisverlauf; mit Einkaufspreis in der Sammlung siehst du, was deine Sealed-Produkte heute wert sind."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wie entwickeln sich die Preise deutscher Pokémon-Karten?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PokéTrack erfasst jeden Tag die Preise von rund 19.900 deutschen Karten und wertet sie jedes Quartal im PokéTrack Marktbericht aus – mit Index, Gewinnern und Verlierern und dem Vergleich der Sets: https://poketrack.de/magazin/marktbericht-q3-2026.html"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wie funktioniert der Karten-Scanner?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kamera auf die Karte halten: Die App liest Kartennummer und Set und schlägt die passende Karte vor, auch bei alten Sets und Karten mit gleicher Nummer. Mit einem Tipp liegt sie in der Sammlung, mit Variante, Zustand und Einkaufspreis."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Brauche ich ein Konto?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nein. PokéTrack funktioniert ohne Anmeldung, die Daten bleiben dann auf dem Gerät. Ein kostenloses Konto sichert die Sammlung und gleicht sie zwischen iPhone und iPad ab. Export als CSV oder JSON ist jederzeit möglich."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Gibt es PokéTrack für Android?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Noch nicht – die App gibt es derzeit für iPhone und iPad. Den Karten-Katalog mit Preisen und Preisverlauf kann man aber auf jedem Gerät im Browser nutzen: https://poketrack.de/karten/"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Ist PokéTrack eine offizielle Pokémon-App?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nein. PokéTrack ist eine unabhängige App von Daniel Bruck aus Wien und steht in keiner Verbindung zu Nintendo, The Pokémon Company, Creatures oder GAME FREAK."
+      }
+    }
+  ]
+}
   </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8432575775521548" crossorigin="anonymous"></script>
 <link rel="icon" href="/favicon.ico" sizes="any" /><link rel="icon" type="image/png" href="/favicon.png" sizes="192x192" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -139,7 +203,7 @@
       <div class="stat-label">neue Preise</div>
     </div>
   </div>
-  <p class="stats-detail">146 deutsche Sets (19.900 Karten) · 186 englische (21.600) · 400 japanische (27.900) — von der Grundserie bis „30 Jahre“, die Wizards-Sets auch als 1. Edition.</p>
+  <p class="stats-detail">146 deutsche Sets (19.900 Karten) · 186 englische (21.600) · 400 japanische (27.900) — von der Grundserie bis „30 Jahre“, die Wizards-Sets auch als 1. Edition. Dazu rund 770 Sealed-Produkte.</p>
 </div>
 
 <!-- SCREENSHOTS -->
@@ -196,6 +260,11 @@
       <p>Fortschritt für jedes Set, normal oder als Master Set. Heft dir ein Ziel-Set an, und die Startseite zeigt, welche Karten noch fehlen und was sie kosten. Ist ein Set komplett, gibt's Konfetti.</p>
     </div>
     <div class="feature-card">
+      <span class="feature-icon">🎁</span>
+      <h3>Sealed-Produkte <span class="neu">Neu</span></h3>
+      <p>Displays, Top-Trainer-Boxen, Booster-Bundles, Tins und Mini-Tins – rund 770 Produkte mit Tagespreis und Preisverlauf, deutsch und englisch. Mit Einkaufspreis in die Sammlung legen und sehen, was sie heute wert sind.</p>
+    </div>
+    <div class="feature-card">
       <span class="feature-icon">🗂️</span>
       <h3>Drei Kataloge</h3>
       <p>146 deutsche, 186 englische und 400 japanische Sets, sortiert nach Ära, mit Set-Logos. Basisset, Dschungel, Fossil, Team Rocket und die Neo-Sets gibt es zusätzlich als 1. Edition mit eigenen Preisen.</p>
@@ -241,6 +310,7 @@
         <li>Sammlung, Wunschliste, Doppelte, Statistik</li>
         <li>Scanner mit täglichem Kontingent</li>
         <li>Setwert für jedes Set, Ziel-Set, Wochenrückblick</li>
+        <li>Sealed-Produkte mit Preisen und Verlauf</li>
         <li>Konto, Sync und Export</li>
       </ul>
     </div>
@@ -264,6 +334,17 @@
   <h2 class="section-title">Was der Markt gerade macht</h2>
 
   <div class="mag-grid">
+    <a class="mag-card" href="/magazin/marktbericht-q3-2026.html">
+      <img src="https://images.poketrack.de/Agoyon-Schlingking-GX-224-Welten-im-Wandel.png"
+           alt="Agoyon &amp; Schlingking-GX aus Welten im Wandel" loading="lazy" width="84" height="117">
+      <div>
+        <h3>Marktbericht 3. Quartal 2026</h3>
+        <p>Neue Mega-Sets verlieren bis zu 21 %, ältere halten sich: wie sich die Preise von über
+           18.000 deutschen Karten im Spätsommer entwickelt haben.</p>
+        <span class="mag-mehr">Weiterlesen →</span>
+      </div>
+    </a>
+
     <a class="mag-card" href="/magazin/teuerste-karten.html">
       <img src="https://images.poketrack.de/Glurak-basis-set.png"
            alt="Glurak aus dem Basisset" loading="lazy" width="84" height="117">
@@ -355,6 +436,14 @@
     <details>
       <summary>Welche Sprachen und Sets werden unterstützt?</summary>
       <p>Deutsch, Englisch und Japanisch: 146 deutsche, 186 englische und 400 japanische Sets, zusammen 732 Sets mit rund 69.400 Karten. Von der Grundserie bis zu den neuesten Sets, die Wizards-Sets (Basisset, Dschungel, Fossil, Team Rocket, Neo) auch als 1. Edition mit eigenen Preisen. Englische und japanische Karten haben den US-Marktpreis, umgerechnet in Euro.</p>
+    </details>
+    <details>
+      <summary>Kann ich auch Displays, Top-Trainer-Boxen und Tins erfassen?</summary>
+      <p>Ja. PokéTrack kennt rund 770 versiegelte Produkte: Displays, Top-Trainer-Boxen, Booster-Bundles, Tins und Mini-Tins, auf Deutsch und Englisch. Jedes hat einen Tagespreis und einen Preisverlauf; mit Einkaufspreis in der Sammlung siehst du, was deine Sealed-Produkte heute wert sind.</p>
+    </details>
+    <details>
+      <summary>Wie entwickeln sich die Preise deutscher Pokémon-Karten?</summary>
+      <p>PokéTrack erfasst jeden Tag die Preise von rund 19.900 deutschen Karten und wertet sie jedes Quartal im <a href="/magazin/marktbericht-q3-2026.html">PokéTrack Marktbericht</a> aus – mit Index, Gewinnern und Verlierern und dem Vergleich der Sets.</p>
     </details>
     <details>
       <summary>Wie funktioniert der Karten-Scanner?</summary>

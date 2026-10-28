@@ -12,6 +12,7 @@ Stand: Oktober 2026. Die Zahlen unten werden bei jeder neuen App-Version aktuali
 - Preise: einmal täglich aktualisiert. Deutsche Karten: günstigstes deutsches Angebot in Near Mint. Englische und japanische Karten: US-Marktpreis, umgerechnet in Euro zum Tageskurs der EZB.
 - Reverse Holo: eigene Preise, getrennt von der normalen Karte, auch für Sonder-Reverse (Pokéball- und Masterball-Muster).
 - Preisverlauf: Diagramm für jede Karte, von 7 Tagen bis zum gesamten Verlauf, umschaltbar zwischen Normal, Reverse und Sonder-Reverse.
+- Sealed-Produkte: rund 770 versiegelte Produkte (Displays, Top-Trainer-Boxen, Booster-Bundles, Tins, Mini-Tins) auf Deutsch und Englisch, mit Tagespreis, Preisverlauf und Sammlung mit Einkaufspreis.
 - Scanner: Kamera auf die Karte halten, die App erkennt Kartennummer und Set und schlägt die passende Karte vor.
 - Sammlung: mit Variante, Zustand, Anzahl und Einkaufspreis; Gesamtwert, Gewinn, Wunschliste, Doppelte, Set-Fortschritt (auch Master Set), Ziel-Set, Wochenrückblick am Sonntag.
 - Konto: optional. Ohne Anmeldung bleiben die Daten auf dem Gerät; mit kostenlosem Konto Sicherung und Abgleich zwischen iPhone und iPad. Export als CSV oder JSON.
@@ -31,6 +32,8 @@ Stand: Oktober 2026. Die Zahlen unten werden bei jeder neuen App-Version aktuali
 - [Patchnotes](https://poketrack.de/patchnotes.html): Änderungen je App-Version
 
 ## Magazin (Auswertungen der eigenen Preisdaten)
+
+- [PokéTrack Marktbericht 3. Quartal 2026](https://poketrack.de/magazin/marktbericht-q3-2026.html): Preisentwicklung von über 18.000 deutschen Karten Ende Juli bis Ende September 2026 – Index −4,7 %, neue Mega-Sets bis −21 %, Reverse im Mittel 7,4-mal so teuer wie die normale Karte. Erscheint vierteljährlich.
 
 - [Die teuersten deutschen Pokémon-Karten](https://poketrack.de/magazin/teuerste-karten.html): Spitzenpreise am deutschen Markt, täglich neu berechnet
 - [Was kostet ein komplettes Pokémon-Set?](https://poketrack.de/magazin/set-komplettpreise.html): Summe aller Karten je deutschem Set
