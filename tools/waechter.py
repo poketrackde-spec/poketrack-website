@@ -42,6 +42,10 @@ def jetzt() -> dt.datetime:
 
 # ── Netz ──────────────────────────────────────────────────────────────────────
 
+def zahl_de(n) -> str:
+    return f"{int(n or 0):,}".replace(",", ".")
+
+
 def holen(url, timeout=20, daten=None, kopf=None, versuche=2):
     """(status, bytes, sekunden, header). Netzfehler -> status 0. Ein zweiter
     Versuch nach 15 s, damit ein einzelner Aussetzer keinen Alarm ausloest."""
@@ -129,12 +133,21 @@ def pruefe_status(b: Befund, stand: dict):
         b.info["preise"][sp] = h.get("gemessen")
         if not s.get("zahlen_stand"):
             continue   # Zaehlungen laufen gerade erst an (nach Neustart)
+        name = {"de": "deutsch", "en": "englisch", "jp": "japanisch"}[sp]
         if stunde >= ab and not h.get("cron_gelaufen"):
-            name = {"de": "deutsch", "en": "englisch", "jp": "japanisch"}[sp]
             b.problem(f"preise_{sp}", "alarm",
                       f"Preise {name} heute NICHT aktualisiert (Sync fällig seit {ab - 2}:00). cron-job.org prüfen.")
-    if stunde >= max(PREISE_FAELLIG.values()) and not any(k.startswith("preise_") for k in b.probleme):
-        b.gut("Preise heute in allen drei Sprachen gemessen")
+        elif stunde >= ab and not s.get("sync_running") and (h.get("zeilen") or 0) > 0 \
+                and h["gemessen"] < 0.5 * h["zeilen"]:
+            # 28.10.2026: Sync brach mittendrin ab (DE 10.104 statt ~37.000)
+            b.problem(f"preise_{sp}", "alarm",
+                      f"Preise {name} nur teilweise aktualisiert: {zahl_de(h['gemessen'])} von {zahl_de(h['zeilen'])}. Sync abgebrochen?")
+        sync = (s.get("letzte_syncs") or {}).get(sp) or {}
+        if sync.get("status") == "fehler" and str(sync.get("zeit", "")).startswith(jetzt().date().isoformat()):
+            b.problem(f"sync_{sp}", "alarm", f"Preis-Sync {name} abgestürzt: {str(sync.get('fehler') or sync.get('error'))[:160]}")
+    # Immer mitzaehlen, damit die Zahl der Pruefungen nicht mit der Uhrzeit schwankt
+    if not any(k.startswith(("preise_", "sync_")) for k in b.probleme):
+        b.gut("Preise pünktlich (alle fälligen Sprachen gemessen)")
 
     # Schluessel am Server
     fehlend = [k for k, v in (s.get("konfiguration") or {}).items() if not v]
