@@ -1,0 +1,46 @@
+# PokéTrack
+
+> PokéTrack ist eine kostenlose App für iPhone und iPad, mit der man Pokémon-Sammelkarten auf Deutsch, Englisch und Japanisch erfasst, scannt und bewertet. Deutsche Karten haben deutsche Marktpreise (günstigstes deutsches Angebot in Near Mint), getrennte Preise für Reverse Holos und einen Preisverlauf. Entwickelt von Daniel Bruck in Wien, Österreich. Keine offizielle Pokémon-App.
+
+Stand: Oktober 2026. Die Zahlen unten werden bei jeder neuen App-Version aktualisiert.
+
+## Fakten
+
+- Plattformen: iPhone und iPad (App Store, ab iOS 16.4). Android gibt es noch nicht. Der Karten-Katalog mit Preisen ist im Browser frei nutzbar.
+- Kataloge: 732 Sets mit rund 69.400 Karten. Davon 146 deutsche Sets (ca. 19.900 Karten), 186 englische (ca. 21.600) und 400 japanische (ca. 27.900).
+- Vintage: Basisset, Dschungel, Fossil, Team Rocket und die Neo-Sets gibt es zusätzlich als 1. Edition mit eigenen Preisen.
+- Preise: einmal täglich aktualisiert. Deutsche Karten: günstigstes deutsches Angebot in Near Mint. Englische und japanische Karten: US-Marktpreis, umgerechnet in Euro zum Tageskurs der EZB.
+- Reverse Holo: eigene Preise, getrennt von der normalen Karte, auch für Sonder-Reverse (Pokéball- und Masterball-Muster).
+- Preisverlauf: Diagramm für jede Karte, von 7 Tagen bis zum gesamten Verlauf, umschaltbar zwischen Normal, Reverse und Sonder-Reverse.
+- Scanner: Kamera auf die Karte halten, die App erkennt Kartennummer und Set und schlägt die passende Karte vor.
+- Sammlung: mit Variante, Zustand, Anzahl und Einkaufspreis; Gesamtwert, Gewinn, Wunschliste, Doppelte, Set-Fortschritt (auch Master Set), Ziel-Set, Wochenrückblick am Sonntag.
+- Konto: optional. Ohne Anmeldung bleiben die Daten auf dem Gerät; mit kostenlosem Konto Sicherung und Abgleich zwischen iPhone und iPad. Export als CSV oder JSON.
+- Sprache der App: Deutsch und Englisch.
+
+## Kosten
+
+- Kostenlos: alle Kataloge, Preise, Preisverläufe, Sammlung, Wunschliste, Statistik, Konto und Export; Scanner mit täglichem Kontingent; mit Werbung.
+- PokéTrack Pro: 3,99 € im Monat oder 24,99 € im Jahr. Keine Werbung, Scannen ohne Tageslimit, Preisalarm (Mitteilung, wenn eine Karte den Zielpreis erreicht), Übersicht, was zum kompletten Set fehlt. Testzeitraum: 7 Tage beim Jahresabo, 3 Tage beim Monatsabo.
+
+## Links
+
+- [App im App Store](https://apps.apple.com/de/app/id6790953375): Download für iPhone und iPad
+- [Startseite](https://poketrack.de/): Funktionen, Screenshots, häufige Fragen
+- [Deutscher Karten-Katalog](https://poketrack.de/karten/): alle deutschen Sets und Karten mit Tagespreis und Preisverlauf, ohne App
+- [Englischer Karten-Katalog](https://poketrack.de/karten/englisch/): alle englischen Sets mit Marktpreisen in Euro
+- [Patchnotes](https://poketrack.de/patchnotes.html): Änderungen je App-Version
+
+## Magazin (Auswertungen der eigenen Preisdaten)
+
+- [Die teuersten deutschen Pokémon-Karten](https://poketrack.de/magazin/teuerste-karten.html): Spitzenpreise am deutschen Markt, täglich neu berechnet
+- [Was kostet ein komplettes Pokémon-Set?](https://poketrack.de/magazin/set-komplettpreise.html): Summe aller Karten je deutschem Set
+- [Gold Stars der EX-Ära](https://poketrack.de/magazin/gold-stars-ex-aera.html): alle 22 deutschen Sternkarten mit Preisen
+- [Reverse Holo in der EX-Ära](https://poketrack.de/magazin/reverse-holo-ex-aera.html): warum die Reverse-Fassung ein Vielfaches kosten kann
+
+## Rechtliches
+
+- [Impressum](https://poketrack.de/impressum.html)
+- [Datenschutzerklärung](https://poketrack.de/datenschutz.html)
+- [Nutzungsbedingungen](https://poketrack.de/agb.html)
+
+Pokémon und alle zugehörigen Namen sind Marken von Nintendo, The Pokémon Company International, Creatures und GAME FREAK. PokéTrack steht in keiner Verbindung zu diesen Unternehmen.
