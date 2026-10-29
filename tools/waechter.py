@@ -31,7 +31,11 @@ WIEN = ZoneInfo("Europe/Vienna")
 
 # Ab wann (Ortszeit) der Preis-Sync einer Sprache gelaufen sein muss.
 # Sync-Zeiten: DE 05:00, JP 07:00, EN 09:00 (cron-job.org) - plus Puffer.
-PREISE_FAELLIG = {"de": 7, "jp": 9, "en": 11}
+# Ab dieser Stunde (Wien) muss der Sync gelaufen sein. Seit 29.10.2026 laufen alle
+# nachts (cron-job.org): DE 03:00, EN 03:45, JP 04:45 - weit weg von Deploys,
+# die den Server neu starten und einen laufenden Sync abbrechen.
+PREISE_FAELLIG = {"de": 6, "en": 6, "jp": 7}
+SYNC_UHRZEIT = {"de": "3:00", "en": "3:45", "jp": "4:45"}
 MIN_KARTEN = {"db": 19000, "db_en": 21000, "db_jp": 29000}
 WIEDERHOLEN_STUNDEN = 6     # ungeloestes Problem hoechstens so oft erneut melden
 
@@ -136,7 +140,7 @@ def pruefe_status(b: Befund, stand: dict):
         name = {"de": "deutsch", "en": "englisch", "jp": "japanisch"}[sp]
         if stunde >= ab and not h.get("cron_gelaufen"):
             b.problem(f"preise_{sp}", "alarm",
-                      f"Preise {name} heute NICHT aktualisiert (Sync fällig seit {ab - 2}:00). cron-job.org prüfen.")
+                      f"Preise {name} heute NICHT aktualisiert (Sync fällig seit {SYNC_UHRZEIT[sp]}). cron-job.org prüfen.")
         elif stunde >= ab and not s.get("sync_running") and (h.get("zeilen") or 0) > 0 \
                 and h["gemessen"] < 0.5 * h["zeilen"]:
             # 28.10.2026: Sync brach mittendrin ab (DE 10.104 statt ~37.000)
