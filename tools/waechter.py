@@ -352,6 +352,46 @@ def melden(b: Befund, stand: dict, kanal: str, quelle: str, trocken=False):
             del offen[schluessel]
 
 
+WOCHENTAG = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+
+
+def grund_zusammenfassung(b: Befund, stand: dict, kanal: str, trocken=False):
+    """Taeglich ab 08:00 aus der Cloud - kommt auch, wenn der Laptop aus ist
+    (seit 29.10.2026). Nur oeffentliche Daten; Downloads, Einnahmen, Abos und
+    Nutzer schickt der Laptop-Waechter separat ("Zahlen"), sobald er laeuft."""
+    jz = jetzt()
+    heute = jz.date().isoformat()
+    # Zeitfenster begrenzen: geht der Actions-Cache verloren, kaeme sie sonst
+    # bei jedem Lauf des Tages erneut.
+    if not (8 <= jz.hour < 12) or stand.get("zusammenfassung") == heute:
+        return
+    zeilen = []
+    if b.probleme:
+        zeilen.append(f"⚠️ {len(b.probleme)} Problem{'e' if len(b.probleme) > 1 else ''}:")
+        zeilen += [f"  • {text}" for _, text in b.probleme.values()]
+    else:
+        zeilen.append(f"✅ Alles läuft ({len(b.ok)} Prüfungen ok)")
+    zeilen.append("")
+    pr = b.info.get("preise") or {}
+    k = b.info.get("api_kontingent") or {}
+    preise = " · ".join(f"{sp.upper()} {zahl_de(n)}" if n else f"{sp.upper()} –" for sp, n in pr.items())
+    zeilen.append(f"💰 Preise heute gemessen: {preise}"
+                  + (f" · API-Rest {zahl_de(k['rest'])}/{zahl_de(k.get('limit') or 0)}" if k.get("rest") is not None else ""))
+    kat = b.info.get("kataloge") or {}
+    if kat:
+        zeilen.append("📚 Kataloge: " + " · ".join(f"{n} {zahl_de(c or 0)}" for n, (v, c) in zip(("DE", "EN", "JP"), kat.values())))
+    st = b.info.get("app_store") or {}
+    if st.get("bewertung"):
+        zeilen.append(f"⭐ App Store: {st['bewertung']:.1f} ★ aus {st.get('anzahl')} Bewertungen (DE) · Version {st.get('version')}")
+    if b.info.get("preis_spruenge") is not None:
+        zeilen.append(f"🔎 Preis-Check: {zahl_de(b.info.get('preise_de_anzahl'))} deutsche Karten mit Preis, "
+                      f"{b.info['preis_spruenge']} auffällige Sprünge")
+    zeilen.append("")
+    zeilen.append("📊 Downloads, Einnahmen und Nutzer folgen vom Laptop, sobald er läuft.")
+    ntfy(kanal, f"☀️ PokéTrack – {WOCHENTAG[jz.weekday()]} {jz:%d.%m.}", "\n".join(zeilen), 3, ["sunny", "github"], trocken)
+    stand["zusammenfassung"] = heute
+
+
 def main(argv):
     pfad = "waechter_stand.json"
     if "--stand" in argv:
@@ -367,6 +407,9 @@ def main(argv):
         print("NTFY_KANAL fehlt - nur Ausgabe.")
         trocken = True
     melden(b, stand, kanal, "github", trocken)
+    if "--zusammenfassung" in argv:
+        stand.pop("zusammenfassung", None)
+    grund_zusammenfassung(b, stand, kanal, trocken)
     if kanal and not trocken and not stand.get("verbunden"):
         ntfy(kanal, "🔗 GitHub-Wächter verbunden",
              f"Prüft ab jetzt alle 30 Minuten Server, Preise, Website und Bilder.\n"
