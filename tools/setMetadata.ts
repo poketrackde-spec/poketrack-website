@@ -225,6 +225,33 @@ const NUR_MASTER: Record<string, string[]> = {
   '30th Celebration': ['R/RGB', 'G/RGB', 'B/RGB'],
   // Dieselben drei im deutschen Set (Katalog-Eintrag folgt mit 1.4.1).
   '30 Jahre': ['R/RGB', 'G/RGB', 'B/RGB'],
+  // Sonderdrucke mit Buchstaben-Nummer ('143a'): Turnier-/Liga-Versionen und
+  // Karten aus Kollektionen. Fuer den User Sondervarianten, die nicht zum
+  // normalen Set gehoeren (01.11.2026); spaeter ins Grand Master Set.
+  'Cosmic Eclipse': ['143a'],
+  'Unified Minds': ['191a', '206a', '79a'],
+  'Unbroken Bonds': ['182a', '182b', '189a', '195a'],
+  'Team Up': ['152a', '152b'],
+  'Lost Thunder': ['172a', '187a', '188a', '189a'],
+  'Dragon Majesty': ['40a', '60a'],
+  'Celestial Storm': ['10a', '123a', '148a', '177a'],
+  'Forbidden Light': ['102a', '112a', '113a', '2a'],
+  'Ultra Prism': ['119a', '122a', '125a', '135a', '153a'],
+  'Crimson Invasion': ['63a', '84a'],
+  'Shining Legends': ['10a', '68a', '77a'],
+  'Burning Shadows': ['105a', '112a', '115a', '116a', '18a', '39a', '88a', '92a'],
+  'Guardians Rising': ['121a', '124a', '125a', '128a', '130a', '157a', '19a', '21a', '51a', '60a', '92a'],
+  'Sun & Moon': ['101a'],
+  'Fates Collide': ['105a', '111a', '43a', '54a'],
+  'Generations': ['28a/83', '73a/83'],
+  'BREAKpoint': ['107a', '98a', '98b'],
+  'BREAKthrough': ['146a'],
+  'Ancient Origins': ['75a'],
+  'Roaring Skies': ['77a', '92a'],
+  'Phantom Forces': ['24a', '65a'],
+  'Furious Fists': ['55a'],
+  'Flashfire': ['88a'],
+  'Generationen': ['28a/83', '73a/83'],
 };
 
 export function istNurMaster(setName: string | null | undefined, nummer: string | null | undefined): boolean {
