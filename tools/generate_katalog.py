@@ -66,7 +66,8 @@ def load_set_meta():
                      "logo": logo, "reverseTypes": rtypes}
     return era_order, meta
 BACKEND = "https://poketrack-backend-production.up.railway.app"
-APPSTORE = "https://apps.apple.com/de/app/id6790953375"
+# Kampagnen-Link (ct): Apple zaehlt Downloads je Link (01.11.2026)
+APPSTORE = "https://apps.apple.com/de/app/id6790953375?pt=129170544&amp;ct=web-katalog&amp;mt=8"
 BASE = "https://poketrack.de"
 MORE_LIMIT = 12
 # name -> [(set_name, card)] ueber ALLE Sets (auch bei Einzel-Set-Generierung),
