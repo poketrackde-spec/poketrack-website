@@ -181,7 +181,7 @@ def pruefe_status(b: Befund, stand: dict):
     # Massen-Abruf (seit 02.11.2026): Aufrufer, die die Grenzen gerissen haben
     sch = s.get("schutz") or {}
     b.info["schutz"] = {"gebremst_24h": sch.get("gebremst_24h"), "abgewiesen_24h": sch.get("abgewiesen_24h")}
-    if (sch.get("abgewiesen_24h") or 0) >= 50:
+    if (sch.get("abgewiesen_24h") or 0) >= 200:
         wer = "; ".join(f"{t['ip']}: {zahl_de(t['abgewiesen'])}× ({', '.join(t['gruppen'])})"
                         for t in sch.get("top", [])[:3])
         b.problem("massenabruf", "warnung",
