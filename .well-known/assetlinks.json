@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.pokede.app",
+      "sha256_cert_fingerprints": [
+        "CC:2A:51:E5:69:1B:10:35:1D:29:F9:6B:D8:8F:65:05:2B:D7:B3:63:B4:89:31:E4:31:36:01:D8:6A:5C:15:EA"
+      ]
+    }
+  }
+]
