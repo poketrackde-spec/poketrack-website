@@ -177,6 +177,18 @@ def pruefe_status(b: Befund, stand: dict):
         b.problem("api_zugang", "alarm", f"Preis-API lehnt den Schlüssel ab (HTTP {k['status']}).")
     elif k.get("rest") is not None and k["rest"] < 300:
         b.problem("api_kontingent", "warnung", f"Preis-API: nur noch {k['rest']} Abrufe übrig heute.")
+
+    # Massen-Abruf (seit 02.11.2026): Aufrufer, die die Grenzen gerissen haben
+    sch = s.get("schutz") or {}
+    b.info["schutz"] = {"gebremst_24h": sch.get("gebremst_24h"), "abgewiesen_24h": sch.get("abgewiesen_24h")}
+    if (sch.get("abgewiesen_24h") or 0) >= 50:
+        wer = "; ".join(f"{t['ip']}: {zahl_de(t['abgewiesen'])}× ({', '.join(t['gruppen'])})"
+                        for t in sch.get("top", [])[:3])
+        b.problem("massenabruf", "warnung",
+                  f"Möglicher Daten-Abgriff: {sch['gebremst_24h']} Aufrufer in 24 h gebremst, "
+                  f"{zahl_de(sch['abgewiesen_24h'])} Anfragen abgewiesen. {wer}")
+    elif sch:
+        b.gut("Kein Massen-Abruf")
     return s
 
 

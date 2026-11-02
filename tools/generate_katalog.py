@@ -322,7 +322,10 @@ def fetch_set_prices(set_name):
     q = urllib.parse.urlencode({"set_name": set_name, "sprache": SP["code"]})
     for _ in range(3):
         try:
-            with urllib.request.urlopen(f"{BACKEND}/set-prices?{q}", timeout=90) as r:
+            # Seit 02.11.2026 nur mit Schluessel (GitHub-Geheimnis WERKZEUG_SCHLUESSEL)
+            req = urllib.request.Request(f"{BACKEND}/set-prices?{q}",
+                                         headers={"X-Werkzeug": os.environ.get("WERKZEUG_SCHLUESSEL", "")})
+            with urllib.request.urlopen(req, timeout=90) as r:
                 return json.loads(r.read().decode()).get("cards") or {}
         except Exception:
             time.sleep(2)

@@ -88,6 +88,8 @@ jobs:
           KATALOG_DB_EN: ${{ github.workspace }}/db_en.json
           KATALOG_SETMETA: ${{ github.workspace }}/tools/setMetadata.ts
           PYTHONIOENCODING: utf-8
+          # Schutz gegen Massen-Abruf (02.11.2026): /set-prices nur noch mit Schluessel
+          WERKZEUG_SCHLUESSEL: ${{ secrets.WERKZEUG_SCHLUESSEL }}
         run: python tools/generate_katalog.py
 
       - name: Ergebnis pruefen
