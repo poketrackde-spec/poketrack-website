@@ -307,6 +307,12 @@ def preis_gleich(a, b):
     return abs(a - b) < 0.005
 
 
+# Lockvogel-Karten je Set (vom Backend, Namen stehen bewusst nirgends im Code).
+# Sie bekommen eine Kartenseite (noindex, nicht in der Sitemap) und eine fuer
+# Besucher unsichtbare Kachel - nur wer die Seiten automatisch absaugt, nimmt sie mit.
+KOEDER = {}
+
+
 def fetch_set_prices(set_name):
     """Preise + Preisverlauf ALLER Karten eines Sets in einem Aufruf (/set-prices).
 
@@ -326,7 +332,9 @@ def fetch_set_prices(set_name):
             req = urllib.request.Request(f"{BACKEND}/set-prices?{q}",
                                          headers={"X-Werkzeug": os.environ.get("WERKZEUG_SCHLUESSEL", "")})
             with urllib.request.urlopen(req, timeout=90) as r:
-                return json.loads(r.read().decode()).get("cards") or {}
+                antwort = json.loads(r.read().decode())
+                KOEDER[set_name] = antwort.get("koeder") or []
+                return antwort.get("cards") or {}
         except Exception:
             time.sleep(2)
     print(f"      ! Preise fuer '{set_name}' nicht abrufbar - Seiten ohne Preis")
@@ -825,6 +833,11 @@ def render_set(set_name, cards, total=None, priced=0, reverse_total=None, revers
         tiles += (f'<a class="ktile" href="{e(card_url(set_name, c))}">{it}'
                   f'<span class="kt-name">{e(c["name"])}</span>'
                   f'<span class="kt-num">{e(fmt_num(c["nummer"], set_name))}</span></a>')
+    for k in KOEDER.get(set_name, []):
+        tiles += (f'<a class="ktile" href="{e(card_url(set_name, k))}" style="display:none" '
+                  f'aria-hidden="true" tabindex="-1" rel="nofollow"><div class="kt-noimg"></div>'
+                  f'<span class="kt-name">{e(k["name"])}</span>'
+                  f'<span class="kt-num">{e(fmt_num(k["nummer"], set_name))}</span></a>')
     # Kurzer Einordnungstext aus den Daten des Sets - kein Fuelltext, sondern das,
     # was ein Sammler wissen will: Umfang, Seltenheitsverteilung, Reverse, Wert.
     selten = {}
@@ -1502,6 +1515,12 @@ def bauen(db, set_meta, era_order, only_set=None):
                 urls.append(BASE + c["_url"])
                 preis_je_url[c["_url"]] = prices[i]   # Schluessel = Pfad, wie in stand.json
             n_cards += 1
+        # Lockvoegel: eigene Seite, immer noindex, nie in Sitemap/Stand/Artikeln
+        for k in KOEDER.get(set_name, []):
+            seite = render_card(set_name, k, None, None, set_rt, preise.get(k["nummer"]), set_info)
+            if 'name="robots"' not in seite:
+                seite = seite.replace("<head>", '<head>\n<meta name="robots" content="noindex,nofollow" />', 1)
+            write(card_url(set_name, k).strip("/") + "/index.html", seite)
 
     # Die Magazin-Artikel werten den deutschen Markt aus.
     if SP["code"] == "de":
