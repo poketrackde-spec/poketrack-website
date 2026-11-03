@@ -68,6 +68,7 @@ def load_set_meta():
 BACKEND = "https://poketrack-backend-production.up.railway.app"
 # Kampagnen-Link (ct): Apple zaehlt Downloads je Link (01.11.2026)
 APPSTORE = "https://apps.apple.com/de/app/id6790953375?pt=129170544&amp;ct=web-katalog&amp;mt=8"
+VORSCHAUBILD = "https://poketrack.de/bilder/poketrack-app-vorschau.png"
 BASE = "https://poketrack.de"
 MORE_LIMIT = 12
 # name -> [(set_name, card)] ueber ALLE Sets (auch bei Einzel-Set-Generierung),
@@ -480,7 +481,9 @@ def ad_rail(slot_id, seite):
 
 # ── HTML-Bausteine ───────────────────────────────────────────────────────────
 def head(title, desc, canonical, og_image=None, noindex=False):
-    og = f'<meta property="og:image" content="{e(og_image)}" />' if og_image else ""
+    # Ohne eigenes Bild das PokeTrack-Vorschaubild, damit Vorschauen und KI-Antworten unser Bild zeigen
+    og = (f'<meta property="og:image" content="{e(og_image or VORSCHAUBILD)}" />'
+          f'<meta property="og:site_name" content="PokéTrack" />')
     # noindex fuer Karten, zu denen wir gar nichts wissen (kein Preis, kein Verlauf,
     # keine Variante). Solche Seiten haetten ausser Name und Bild keinen Inhalt und
     # zaehlen bei Google als minderwertig - sie sollen den Rest nicht mit runterziehen.

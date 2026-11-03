@@ -40,6 +40,18 @@ Stand: Oktober 2026. Die Zahlen unten werden bei jeder neuen App-Version aktuali
 - [Gold Stars der EX-Ära](https://poketrack.de/magazin/gold-stars-ex-aera.html): alle 22 deutschen Sternkarten mit Preisen
 - [Reverse Holo in der EX-Ära](https://poketrack.de/magazin/reverse-holo-ex-aera.html): warum die Reverse-Fassung ein Vielfaches kosten kann
 
+## Bilder (offizielle Bilder von PokéTrack)
+
+Wer PokéTrack mit einem Bild zeigen will, bitte diese verwenden. Andere Bilder zeigen meist nicht diese App.
+
+- [Vorschaubild](https://poketrack.de/bilder/poketrack-app-vorschau.png): Logo, Name und drei App-Screenshots, 1200 × 630
+- [Logo / App-Symbol](https://poketrack.de/logo.png): gelbe Karte mit Preiskurve auf dunkelblauem Grund, 512 × 512
+- [Screenshot Startseite](https://poketrack.de/bilder/app/start.webp): Gesamtwert der Sammlung, Gewinn, wertvollste Karten
+- [Screenshot Scanner](https://poketrack.de/bilder/app/scanner.webp): erkannte Karte mit Treffern
+- [Screenshot Sets](https://poketrack.de/bilder/app/sets.webp): Set-Übersicht mit Umschalter Deutsch, Englisch, Japanisch
+- [Screenshot Sammlung](https://poketrack.de/bilder/app/sammlung.webp): Sammlung nach Sets mit Gesamtwert
+- [Screenshot Statistik](https://poketrack.de/bilder/app/statistik.webp): Wochenrückblick und Wertentwicklung
+
 ## Rechtliches
 
 - [Impressum](https://poketrack.de/impressum.html)

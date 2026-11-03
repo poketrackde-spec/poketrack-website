@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://poketrack.de/</loc>
-    <lastmod>2026-10-23</lastmod>
+    <image:image><image:loc>https://poketrack.de/bilder/poketrack-app-vorschau.png</image:loc></image:image>
+    <image:image><image:loc>https://poketrack.de/logo.png</image:loc></image:image>
+    <image:image><image:loc>https://poketrack.de/bilder/app/start.webp</image:loc></image:image>
+    <image:image><image:loc>https://poketrack.de/bilder/app/scanner.webp</image:loc></image:image>
+    <image:image><image:loc>https://poketrack.de/bilder/app/sets.webp</image:loc></image:image>
+    <image:image><image:loc>https://poketrack.de/bilder/app/vintage.webp</image:loc></image:image>
+    <image:image><image:loc>https://poketrack.de/bilder/app/set.webp</image:loc></image:image>
+    <image:image><image:loc>https://poketrack.de/bilder/app/sammlung.webp</image:loc></image:image>
+    <image:image><image:loc>https://poketrack.de/bilder/app/statistik.webp</image:loc></image:image>
+    <image:image><image:loc>https://poketrack.de/bilder/app/wunsch.webp</image:loc></image:image>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
