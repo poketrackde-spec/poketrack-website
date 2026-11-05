@@ -225,9 +225,14 @@ const NUR_MASTER: Record<string, string[]> = {
   '30th Celebration': ['R/RGB', 'G/RGB', 'B/RGB'],
   // Dieselben drei im deutschen Set (Katalog-Eintrag folgt mit 1.4.1).
   '30 Jahre': ['R/RGB', 'G/RGB', 'B/RGB'],
-  // Sonderdrucke mit Buchstaben-Nummer ('143a'): Turnier-/Liga-Versionen und
-  // Karten aus Kollektionen. Fuer den User Sondervarianten, die nicht zum
-  // normalen Set gehoeren (01.11.2026); spaeter ins Grand Master Set.
+};
+
+/**
+ * Sonderdrucke mit Buchstaben-Nummer ('143a'): Turnier-/Liga-Versionen und
+ * Karten aus Kollektionen. Fuer den User Sondervarianten (01.11.2026) - seit
+ * 1.4.8 zaehlen sie nur noch zum Grand Master Set, nicht zu Normal oder Master.
+ */
+const NUR_GRAND: Record<string, string[]> = {
   'Cosmic Eclipse': ['143a'],
   'Unified Minds': ['191a', '206a', '79a'],
   'Unbroken Bonds': ['182a', '182b', '189a', '195a'],
@@ -254,12 +259,20 @@ const NUR_MASTER: Record<string, string[]> = {
   'Generationen': ['28a/83', '73a/83'],
 };
 
+/** Gehoert NICHT zum normalen Set (Master- oder Grand-Master-Sonderkarte). */
 export function istNurMaster(setName: string | null | undefined, nummer: string | null | undefined): boolean {
-  return !!setName && !!nummer && (NUR_MASTER[setName]?.includes(nummer) ?? false);
+  return !!setName && !!nummer
+    && ((NUR_MASTER[setName]?.includes(nummer) ?? false) || (NUR_GRAND[setName]?.includes(nummer) ?? false));
 }
 
+/** Gehoert nur zum Grand Master Set (Buchstaben-Sonderdrucke wie 143a). */
+export function istNurGrand(setName: string | null | undefined, nummer: string | null | undefined): boolean {
+  return !!setName && !!nummer && (NUR_GRAND[setName]?.includes(nummer) ?? false);
+}
+
+/** Anzahl der Karten, die nicht zum normalen Set zaehlen. */
 export function nurMasterAnzahl(setName: string): number {
-  return NUR_MASTER[setName]?.length ?? 0;
+  return (NUR_MASTER[setName]?.length ?? 0) + (NUR_GRAND[setName]?.length ?? 0);
 }
 
 /**
