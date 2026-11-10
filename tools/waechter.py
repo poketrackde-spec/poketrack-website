@@ -182,14 +182,38 @@ def pruefe_status(b: Befund, stand: dict):
     sch = s.get("schutz") or {}
     b.info["schutz"] = {"gebremst_24h": sch.get("gebremst_24h"), "abgewiesen_24h": sch.get("abgewiesen_24h")}
     if (sch.get("abgewiesen_24h") or 0) >= 200:
-        wer = "; ".join(f"{t['ip']}: {zahl_de(t['abgewiesen'])}× ({', '.join(t['gruppen'])})"
-                        for t in sch.get("top", [])[:3])
+        wer = "; ".join(_abgriff_zeile(t) for t in sch.get("top", [])[:3])
         b.problem("massenabruf", "warnung",
                   f"Möglicher Daten-Abgriff: {sch['gebremst_24h']} Aufrufer in 24 h gebremst, "
                   f"{zahl_de(sch['abgewiesen_24h'])} Anfragen abgewiesen. {wer}")
     elif sch:
         b.gut("Kein Massen-Abruf")
     return s
+
+
+def _abgriff_zeile(t: dict) -> str:
+    """Ein gebremster Aufrufer, lesbar: wer, wie oft, wann, welche Grenze.
+    Seit 10.11.2026 liefert der Server Zeitraum und Grenze mit (aeltere Antworten
+    ohne diese Felder ergeben die kurze Fassung)."""
+    teile = [f"{t['ip']}: {zahl_de(t['abgewiesen'])}× ({', '.join(t.get('gruppen', {}))})"]
+    def uhr(iso):
+        return dt.datetime.fromisoformat(iso).astimezone(WIEN).strftime("%d.%m. %H:%M")
+    if t.get("erste") and t.get("letzte"):
+        teile.append(f"{uhr(t['erste'])}–{uhr(t['letzte'])[-5:]} Uhr")
+    grenzen = t.get("grenzen") or {}
+    if grenzen:
+        if grenzen.get("minute"):
+            deutung = "Grenze pro Minute – sehr schnell, eher ein Skript"
+        elif grenzen.get("stunde"):
+            deutung = "Grenze pro Stunde – lange Dauerabfrage"
+        else:
+            deutung = "Grenze pro Tag – eher große Sammlung oder viele Nutzer hinter einer IP"
+        if t.get("spitze_min"):
+            deutung += f", Spitze {zahl_de(t['spitze_min'])}/min"
+        teile.append(deutung)
+    if t.get("vor_neustart"):
+        teile.append("vor dem letzten Server-Neustart")
+    return ", ".join(teile)
 
 
 def pruefe_app_endpunkte(b: Befund, stand: dict):
