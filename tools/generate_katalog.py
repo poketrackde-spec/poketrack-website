@@ -27,6 +27,7 @@
 
 import json
 import os
+import shutil
 import re
 import html
 import datetime
@@ -1612,6 +1613,56 @@ def bauen(db, set_meta, era_order, only_set=None):
             raise SystemExit(
                 f"ABBRUCH: {len(PREIS_FEHLER)} Sets ohne Preise ({anteil:.0%}) - "
                 f"Backend nicht erreichbar? Es wird nichts veroeffentlicht.")
+
+    if not only_set:
+        alte_seiten_entfernen(db)
+
+
+# Hoechstens so viele Seiten auf einmal loeschen - mehr heisst eher ein kaputter
+# Katalog als echte Umbenennungen, dann lieber nichts anfassen.
+_MAX_LOESCHEN = 1500
+
+
+def alte_seiten_entfernen(db):
+    """Seiten von Karten und Sets loeschen, die es im Katalog nicht mehr gibt
+    (seit 10.11.2026). Nach einer Umbenennung blieb sonst die alte Seite stehen,
+    z. B. 164-virizion-v neben 164-viridium-v, oder ganze Sets unter altem Namen
+    (chaos-rising neben wachsendes-chaos) - fuer Google doppelter Inhalt.
+
+    Angefasst werden nur Ordner mit einer index.html (also gebaute Seiten), nie
+    CSS, Bilder oder der englische Katalog unter dem deutschen."""
+    wurzel = os.path.join(OUT, SP["pfad"])
+    if not os.path.isdir(wurzel):
+        return
+    set_slugs = {slug(sn) for sn in db["sets"]}
+    soll = {c["_url"] for cards in db["sets"].values() for c in cards}
+    for sn, koeder in KOEDER.items():
+        soll.update(card_url(sn, k) for k in koeder)
+    weg = []
+    for s in os.listdir(wurzel):
+        set_ordner = os.path.join(wurzel, s)
+        if not os.path.isdir(set_ordner) or (SP["code"] == "de" and s == "englisch"):
+            continue
+        if s not in set_slugs:
+            if os.path.exists(os.path.join(set_ordner, "index.html")):
+                weg.append(set_ordner)
+            continue
+        for k in os.listdir(set_ordner):
+            karte = os.path.join(set_ordner, k)
+            if (os.path.isdir(karte) and os.path.exists(os.path.join(karte, "index.html"))
+                    and f"{kpfad()}/{s}/{k}/" not in soll):
+                weg.append(karte)
+    if not weg:
+        print("  Alte Seiten: keine")
+        return
+    if len(weg) > _MAX_LOESCHEN:
+        print(f"  ! {len(weg)} alte Seiten gefunden - mehr als {_MAX_LOESCHEN}, es wird NICHTS geloescht")
+        return
+    for p in weg:
+        shutil.rmtree(p)
+    print(f"  Alte Seiten entfernt: {len(weg)} "
+          f"({', '.join(os.path.relpath(p, OUT).replace(os.sep, '/') for p in weg[:5])}"
+          f"{' ...' if len(weg) > 5 else ''})")
 
 
 if __name__ == "__main__":
