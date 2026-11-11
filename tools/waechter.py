@@ -178,6 +178,14 @@ def pruefe_status(b: Befund, stand: dict):
     elif k.get("rest") is not None and k["rest"] < 300:
         b.problem("api_kontingent", "warnung", f"Preis-API: nur noch {k['rest']} Abrufe übrig heute.")
 
+    # eBay-Kontingent (seit 11.11.2026): leer = App zeigt keine frischen Angebote
+    eb = ((s.get("ebay_kontingent") or {}).get("tage") or [None])[-1]
+    if eb and eb.get("gesperrt_ab"):
+        ab = dt.datetime.fromisoformat(eb["gesperrt_ab"]).astimezone(WIEN)
+        b.problem("ebay_kontingent", "warnung",
+                  f"eBay-Kontingent leer seit {ab:%H:%M} – bis 09:00 nur gespeicherte Angebote "
+                  f"({zahl_de(eb.get('gesperrt_antworten', 0))} Abrufe ohne frische Angebote).")
+
     # Massen-Abruf (seit 02.11.2026): Aufrufer, die die Grenzen gerissen haben
     sch = s.get("schutz") or {}
     b.info["schutz"] = {"gebremst_24h": sch.get("gebremst_24h"), "abgewiesen_24h": sch.get("abgewiesen_24h")}
