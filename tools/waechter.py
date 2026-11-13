@@ -196,6 +196,13 @@ def pruefe_status(b: Befund, stand: dict):
                   f"{zahl_de(sch['abgewiesen_24h'])} Anfragen abgewiesen. {wer}")
     elif sch:
         b.gut("Kein Massen-Abruf")
+    # Automatische Sperren (seit 13.11.2026): einmal melden, solange die Sperre laeuft
+    for g in sch.get("gesperrt") or []:
+        seit = dt.datetime.fromisoformat(g["seit"]).astimezone(WIEN)
+        bis = dt.datetime.fromisoformat(g["bis"]).astimezone(WIEN)
+        b.problem(f"gesperrt_{g['ip']}", "warnung",
+                  f"Adresse {g['ip']} automatisch gesperrt seit {seit:%d.%m. %H:%M} bis {bis:%d.%m.} "
+                  f"({g['grund']}; seitdem {zahl_de(g.get('abgewiesen_seitdem', 0))} Anfragen abgewiesen).")
     return s
 
 
