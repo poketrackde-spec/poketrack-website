@@ -189,13 +189,21 @@ def pruefe_status(b: Befund, stand: dict):
     # Massen-Abruf (seit 02.11.2026): Aufrufer, die die Grenzen gerissen haben
     sch = s.get("schutz") or {}
     b.info["schutz"] = {"gebremst_24h": sch.get("gebremst_24h"), "abgewiesen_24h": sch.get("abgewiesen_24h")}
-    if (sch.get("abgewiesen_24h") or 0) >= 200:
-        wer = "; ".join(_abgriff_zeile(t) for t in sch.get("top", [])[:3])
+    # Seit 14.11.2026 (Wunsch des Users) warnt nur noch, wer die Grenze pro
+    # Stunde oder pro Tag gerissen hat - das sieht nach Abgreifen aus. Wer nur
+    # kurz die Grenze pro Minute reisst, ist meist ein Nutzer mit grosser
+    # Sammlung (aeltere App ohne Pausen); das steht nur als Info da.
+    top = sch.get("top") or []
+    ernst = [t for t in top if (t.get("grenzen") or {}).get("stunde") or (t.get("grenzen") or {}).get("tag")]
+    if sum(t.get("abgewiesen", 0) for t in ernst) >= 200:
+        wer = "; ".join(_abgriff_zeile(t) for t in ernst[:3])
         b.problem("massenabruf", "warnung",
-                  f"Möglicher Daten-Abgriff: {sch['gebremst_24h']} Aufrufer in 24 h gebremst, "
-                  f"{zahl_de(sch['abgewiesen_24h'])} Anfragen abgewiesen. {wer}")
+                  f"Möglicher Daten-Abgriff: {len(ernst)} Aufrufer über der Stunden- oder Tagesgrenze, "
+                  f"{zahl_de(sum(t.get('abgewiesen', 0) for t in ernst))} Anfragen abgewiesen. {wer}")
     elif sch:
-        b.gut("Kein Massen-Abruf")
+        kurz = len(top) - len(ernst)
+        b.gut(f"Kein Massen-Abruf ({kurz} kurze Spitze(n) pro Minute gebremst, meist Nutzer mit großer Sammlung)"
+              if kurz else "Kein Massen-Abruf")
     # Automatische Sperren (seit 13.11.2026): einmal melden, solange die Sperre laeuft
     for g in sch.get("gesperrt") or []:
         seit = dt.datetime.fromisoformat(g["seit"]).astimezone(WIEN)
@@ -217,10 +225,10 @@ def _abgriff_zeile(t: dict) -> str:
         teile.append(f"{uhr(t['erste'])}–{uhr(t['letzte'])[-5:]} Uhr")
     grenzen = t.get("grenzen") or {}
     if grenzen:
-        if grenzen.get("minute"):
-            deutung = "Grenze pro Minute – sehr schnell, eher ein Skript"
-        elif grenzen.get("stunde"):
-            deutung = "Grenze pro Stunde – lange Dauerabfrage"
+        if grenzen.get("stunde"):
+            deutung = "Grenze pro Stunde – lange Dauerabfrage, eher ein Skript"
+        elif grenzen.get("minute") and not grenzen.get("tag"):
+            deutung = "nur Grenze pro Minute – kurze Spitze, meist ein Nutzer"
         else:
             deutung = "Grenze pro Tag – eher große Sammlung oder viele Nutzer hinter einer IP"
         if t.get("spitze_min"):
