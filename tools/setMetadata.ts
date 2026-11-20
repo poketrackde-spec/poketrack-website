@@ -51,6 +51,7 @@ export const SET_METADATA: Record<string, SetMeta> = {
   // Erscheint am 06.11.2026 - bis dahin steht es als Platzhalter im Sets-Tab
   // (services/kommendeSets.ts). Der Eintrag hier sorgt dafuer, dass es danach
   // mit Logo in der richtigen Aera landet.
+  // Erscheint am 06.02.2027, bis dahin Vorab-Set mit den ersten Karten.
   'Flinke Fäuste':                            { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/flinke-faeuste.png' },
   'Delta-Herrschaft':                         { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/delta-herrschaft.png' },
   'Wachsendes Chaos':                         { era: 'Mega Entwicklung', logo: 'https://images.poketrack.de/wachsendes-chaos.png' },
